@@ -8,6 +8,7 @@
 #ifndef SOURCE_H
 #define SOURCE_H
 
+#include <QObject>
 #include <QStringList>
 
 class Source : public QObject

@@ -30,7 +30,7 @@ MainWindow::MainWindow(QWidget * parent) :
     editorSplitter->addWidget(console);
 
     help = new QTextBrowser(this);
-    help->setSource(QUrl::fromLocalFile(QFileInfo("help.html").absoluteFilePath()));
+    help->setSource(QUrl("qrc:/doc/help"));
 
     mainSplitter = new QSplitter(Qt::Horizontal, this);
     mainSplitter->addWidget(editorSplitter);

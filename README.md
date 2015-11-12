@@ -2,11 +2,13 @@
 Koryaga is a new single-typed expression-centred general-purpose programming language.  
 It allows rapid development of robust, concise, correct and high-quality software.
 
-Koryaga features:  
+## Koryaga features:
 
 * guaranteed memory safety  
 * referential transparency  
 * minimal runtime
+
+Travis CI status: [![Build Status](https://travis-ci.org/YoukaiCat/KLang.svg)](https://travis-ci.org/YoukaiCat/KLang)
 
 ## EBNF
 ```
@@ -14,20 +16,20 @@ program = "Начало",
           ( declaration | ( { declaration, ";" }, declaration ) ),
           { assignment },
           "Окончание" ;
-declaration = ( "Анализ", identifier ) 
+declaration = ( "Анализ", identifier )
             | ( "Синтез", ( identifier | ( { identifier, "," }, identifier ) ) ) ;
 assignment = identifier, "=", expression ;
 expression = [ "-" ], additive-expression ;
-additive-expression = ( additive-expression, ( "+" | "-" ), multiplicative-expression ) 
+additive-expression = ( additive-expression, ( "+" | "-" ), multiplicative-expression )
                     | multiplicative-expression ;
-multiplicative-expression = ( multiplicative-expression, ( "*" | "/" ), boolean-binary-expression ) 
+multiplicative-expression = ( multiplicative-expression, ( "*" | "/" ), boolean-binary-expression )
                           | boolean-binary-expression ;
-boolean-binary-expression = ( boolean-binary-expression, ("И" | "ИЛИ"), not-expression ) 
+boolean-binary-expression = ( boolean-binary-expression, ("И" | "ИЛИ"), not-expression )
                           | not-expression ;
-not-expression = ("НЕ", base) 
+not-expression = ("НЕ", base)
                | base ;
 base = ( "(", expression, ")" )
-     | identifier 
+     | identifier
      | real ;
 identifier = letter, 3 * [digit] ;
 letter = lower | upper
@@ -49,7 +51,7 @@ digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
 ## Свойства языка
 
 ### Приоретет операторов в порядке убывания:
-1 - "НЕ"
+1 - "НЕ"  
 2 - "И", "ИЛИ"  
 3 - "*", "/"  
 4 - "+", "-"  
@@ -66,7 +68,7 @@ digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
 0.0 И (1.0 / 0.0) -> 0.0  
 1.0 И (1.0 / 0.0) -> Ошибка: деление на ноль!  
 1.0 ИЛИ (1.0 / 0.0) -> 1.0  
-0.0 ИЛИ (1.0 / 0.0) -> Ошибка: деление на ноль!  
+0.0 ИЛИ (1.0 / 0.0) -> Ошибка: деление на ноль!
 
 ### Регистр
 Регистр символов имеет значение.

@@ -192,4 +192,3 @@ Node Parser::end()
         throw Error(QString("Ожидалось ключевое слово \"Окончание\", но получено '") + token.getValue() + "'", token.getIndexBegin(), token.getIndexEnd());
     }
 }
-

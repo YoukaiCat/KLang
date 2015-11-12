@@ -3,33 +3,42 @@ QT += core gui widgets
 TARGET = KLang
 TEMPLATE = app
 
-CONFIG += warn_on debug
+CONFIG += warn_on
 
-QMAKE_CXXFLAGS += -std=c++11 -pedantic -Wall -Wextra -O0 -ggdb -g3
+QMAKE_CXXFLAGS += -std=c++1y -pedantic -Wall -Wextra
 
-SOURCES += main.cpp \
-    MainWindow.cpp \
-    Token.cpp \
-    Lexeme.cpp \
-    Source.cpp \
-    Lexer.cpp \
-    Parser.cpp \
-    Node.cpp \
-    Interpreter.cpp \
-    Error.cpp \
-    SyntaxHighlighter.cpp
+CONFIG(debug, debug|release) {
+    QMAKE_CXXFLAGS += -O0 -ggdb -g3
+}
+
+INCLUDEPATH += include/
+
+SOURCES += \
+    src/main.cpp \
+    src/MainWindow.cpp \
+    src/Token.cpp \
+    src/Lexeme.cpp \
+    src/Source.cpp \
+    src/Lexer.cpp \
+    src/Parser.cpp \
+    src/Node.cpp \
+    src/Interpreter.cpp \
+    src/Error.cpp \
+    src/SyntaxHighlighter.cpp
 
 HEADERS += \
-    MainWindow.h \
-    Token.h \
-    Lexeme.h \
-    Source.h \
-    Lexer.h \
-    Parser.h \
-    Node.h \
-    Interpreter.h \
-    Error.h \
-    SyntaxHighlighter.h
+    include/MainWindow.h \
+    include/Token.h \
+    include/Lexeme.h \
+    include/Source.h \
+    include/Lexer.h \
+    include/Parser.h \
+    include/Node.h \
+    include/Interpreter.h \
+    include/Error.h \
+    include/SyntaxHighlighter.h
 
 FORMS += \
-    MainWindow.ui
+    ui/MainWindow.ui
+
+RESOURCES += KLang.qrc
