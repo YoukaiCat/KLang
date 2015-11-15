@@ -1,1 +1,8 @@
-KLang.pro.user
+KLang.pro.user*
+Makefile
+.o
+.exe
+moc_*
+ui_*
+qrc_*
+KLang
