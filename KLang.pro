@@ -5,7 +5,7 @@ TEMPLATE = app
 
 CONFIG += warn_on
 
-QMAKE_CXXFLAGS += -std=c++1y -pedantic -Wall -Wextra
+QMAKE_CXXFLAGS += -std=c++11 -pedantic -Wall -Wextra -DHAVE_STRING_H=1
 
 LIBS += -lgvc -lcgraph
 

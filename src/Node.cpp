@@ -60,7 +60,7 @@ QString Node::inspect(int level) const
 
 QImage Node::printAsGraph() const
 {
-    char ** image;
+    char ** image = (char **) malloc(1 * sizeof(char *));
     uint len = 0;
 
     Agraph_t * graph;
@@ -74,7 +74,7 @@ QImage Node::printAsGraph() const
     nextNode(graph, root);
 
     agsafeset(root, (char *)"color", (char *)"red", (char *)"");
-    gvLayout(gvc, graph, "dot");
+    gvLayout(gvc, graph, (char *)"dot");
     gvRenderData(gvc, graph, (char *)"png", image, &len);
     gvFreeLayout(gvc, graph);
     agclose(graph);
