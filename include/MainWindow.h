@@ -18,6 +18,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTextBrowser>
+#include <QPixmap>
 
 #include "Lexer.h"
 #include "Parser.h"
@@ -48,6 +49,8 @@ public slots:
     void on_actionQuit_triggered();
 
     void on_actionRun_triggered();
+    void on_actionShowASTAsGraph_triggered();
+
     void on_actionAboutProgram_triggered();
     void on_actionAboutQt_triggered();
 
@@ -56,6 +59,7 @@ public slots:
     void onError(Error e);
 
 private:
+    void run();
     void printResult(QMap<QString, double> map);
     void clearErrorHighlighting();
 
@@ -81,6 +85,8 @@ private:
 
     QTextCursor * cursor;
     bool cleared = false;
+
+    QPixmap astGraph;
 };
 
 #endif // MAINWINDOW_H

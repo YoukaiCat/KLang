@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>754</width>
-     <height>29</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -40,6 +40,7 @@
      <string>Запуск</string>
     </property>
     <addaction name="actionRun"/>
+    <addaction name="actionShowASTAsGraph"/>
    </widget>
    <widget class="QMenu" name="menuAbout">
     <property name="title">
@@ -133,6 +134,11 @@
   <action name="actionAboutProgram">
    <property name="text">
     <string>О программе</string>
+   </property>
+  </action>
+  <action name="actionShowASTAsGraph">
+   <property name="text">
+    <string>Запустить и показать АСТ как граф</string>
    </property>
   </action>
  </widget>

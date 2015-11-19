@@ -7,6 +7,7 @@
 
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
+#include "ASTGraphDialog.h"
 
 #include <math.h>
 #include <iostream>
@@ -106,22 +107,43 @@ void MainWindow::on_actionQuit_triggered()
 
 }
 
+void MainWindow::run()
+{
+    lexer = new Lexer(editor->toPlainText());
+    auto tokens = lexer->tokenize();
+    parser = new Parser(tokens);
+    auto ast = parser->parse();
+    interpreter = new Interpreter(ast);
+
+    std::cout << ast.inspect().toStdString() << std::endl;
+
+    astGraph = QPixmap::fromImage(ast.printAsGraph());
+
+    printResult(interpreter->evaluate());
+
+    delete lexer;
+    delete parser;
+    delete interpreter;
+}
+
 void MainWindow::on_actionRun_triggered()
 {
     clearErrorHighlighting();
 
     try {
-        lexer = new Lexer(editor->toPlainText());
-        auto tokens = lexer->tokenize();
-        parser = new Parser(tokens);
-        auto ast = parser->parse();
-        interpreter = new Interpreter(ast);
-        std::cout << ast.inspect().toStdString() << std::endl;
-        printResult(interpreter->evaluate());
+        run();
+    } catch (Error e) {
+        onError(e);
+    }
+}
 
-        delete lexer;
-        delete parser;
-        delete interpreter;
+void MainWindow::on_actionShowASTAsGraph_triggered()
+{
+    clearErrorHighlighting();
+
+    try {
+        run();
+        ASTGraphDialog(astGraph, this).exec();
     } catch (Error e) {
         onError(e);
     }

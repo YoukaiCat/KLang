@@ -7,6 +7,8 @@ CONFIG += warn_on
 
 QMAKE_CXXFLAGS += -std=c++1y -pedantic -Wall -Wextra
 
+LIBS += -lgvc -lcgraph
+
 CONFIG(debug, debug|release) {
     QMAKE_CXXFLAGS += -O0 -ggdb -g3
 }
@@ -24,7 +26,8 @@ SOURCES += \
     src/Node.cpp \
     src/Interpreter.cpp \
     src/Error.cpp \
-    src/SyntaxHighlighter.cpp
+    src/SyntaxHighlighter.cpp \
+    src/ASTGraphDialog.cpp
 
 HEADERS += \
     include/MainWindow.h \
@@ -36,9 +39,11 @@ HEADERS += \
     include/Node.h \
     include/Interpreter.h \
     include/Error.h \
-    include/SyntaxHighlighter.h
+    include/SyntaxHighlighter.h \
+    include/ASTGraphDialog.h
 
 FORMS += \
-    ui/MainWindow.ui
+    ui/MainWindow.ui \
+    ui/ASTGraphDialog.ui
 
 RESOURCES += KLang.qrc
