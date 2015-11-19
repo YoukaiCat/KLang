@@ -1,0 +1,15 @@
+environment:
+  global:
+    MINGW: C:\Qt\Tools\mingw492_32
+  matrix:
+    - QTDIR: C:\Qt\5.5\mingw492_32
+    - QTDIR: C:\Qt\5.5\msvc2013_64
+
+configuration: Release
+
+install:
+  - set PATH=%PATH%;%QTDIR%\bin;%MINGW%\bin;C:\Qt\Tools\QtCreator\bin
+
+build_script:
+  - qmake
+  - make
