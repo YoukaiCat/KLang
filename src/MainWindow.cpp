@@ -9,6 +9,7 @@
 #include "ui_MainWindow.h"
 
 #include <math.h>
+#include <iostream>
 
 MainWindow::MainWindow(QWidget * parent) :
     QMainWindow(parent),
@@ -115,7 +116,7 @@ void MainWindow::on_actionRun_triggered()
         parser = new Parser(tokens);
         auto ast = parser->parse();
         interpreter = new Interpreter(ast);
-        qDebug() << ast.inspect();
+        std::cout << ast.inspect().toStdString() << std::endl;
         printResult(interpreter->evaluate());
 
         delete lexer;
