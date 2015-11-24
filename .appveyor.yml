@@ -16,6 +16,19 @@ build_script:
   - jom install
 
 artifacts:
-  - name: KLang
-    path: release
+  - path: release
+    name: KLang
     type: zip
+
+deploy:
+  release: KLang-$(APPVEYOR_REPO_TAG_NAME)_win_x86_32
+  description: ''
+  provider: GitHub
+  auth_token:
+    secure: f1qLXI72FZwkMS6SHE+dBvV4N9t3AZzUOpxexMXs2h79b3mVqTgZ/1Mw3x/L+rSj
+  artifact: KLang
+  draft: true
+  prerelease: true
+  on:
+    branch: master
+    appveyor_repo_tag: true
