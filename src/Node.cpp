@@ -69,7 +69,11 @@ QImage Node::printAsGraph() const
 
     gvc = gvContext();
     graph = agopen((char *)"Graph", Agdirected, 0);
+    agset(graph, (char *)"charset", (char *)"UTF-8");
+
     root = agnode(graph, (char *)"AST", 1);
+    agsafeset(root, (char *)"shape", (char *)"box", (char *)"");
+    agsafeset(root, (char *)"fontsize", (char *)"8", (char *)"");
 
     nextNode(graph, root);
 
@@ -86,6 +90,9 @@ void Node::nextNode(Agraph_t * graph, Agnode_t * parent) const
 {
     Agnode_t * node = agnode(graph, QUuid::createUuid().toString().toLatin1().data(), 1);
     agset(node, (char *)"label", token.inspect().toLocal8Bit().data());
+    agsafeset(node, (char *)"shape", (char *)"box", (char *)"");
+    agsafeset(node, (char *)"fontsize", (char *)"7", (char *)"");
+    agsafeset(node, (char *)"margin", (char *)"0.3,0.005", (char *)"");
     agedge(graph, parent, node, 0, 1);
     for (auto child : children) {
         child.nextNode(graph, node);

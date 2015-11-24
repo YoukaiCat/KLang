@@ -1,16 +1,16 @@
 environment:
-  global:
-    MINGW: C:\Qt\Tools\mingw492_32
   matrix:
-    - QTDIR: C:\Qt\5.5\mingw492_32
-    - QTDIR: C:\Qt\5.5\msvc2013_64
+    - QTDIR: C:\Qt\5.5\msvc2013
 
 configuration: Release
 
 install:
   - choco install -y graphviz
-  - set PATH=%PATH%;%QTDIR%\bin;%MINGW%\bin;C:\Qt\Tools\QtCreator\bin
+  - set PATH=%PATH%;%QTDIR%\bin;C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin;C:\Qt\5.5\msvc2013\bin;C:\Qt\Tools\QtCreator\bin
 
 build_script:
-  - qmake
-  - mingw32-make
+  - qmake.exe KLang.pro -r -spec win32-msvc2013
+  - VcVars32
+  - jom
+  - windeployqt --no-system-d3d-compiler --no-translations release
+  - jom install

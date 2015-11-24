@@ -10,7 +10,6 @@
 #include "ASTGraphDialog.h"
 
 #include <math.h>
-#include <iostream>
 
 MainWindow::MainWindow(QWidget * parent) :
     QMainWindow(parent),
@@ -115,7 +114,7 @@ void MainWindow::run()
     auto ast = parser->parse();
     interpreter = new Interpreter(ast);
 
-    std::cout << ast.inspect().toStdString() << std::endl;
+    qInfo(ast.inspect().toStdString().c_str());
 
     astGraph = QPixmap::fromImage(ast.printAsGraph());
 

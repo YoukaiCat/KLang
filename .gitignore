@@ -1,8 +1,11 @@
 KLang.pro.user*
-Makefile
-.o
-.exe
+Makefile*
+*.o
+*.obj
+*.exe
 moc_*
 ui_*
 qrc_*
 KLang
+config6
+

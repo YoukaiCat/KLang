@@ -5,12 +5,18 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-#include "MainWindow.h"
 #include <QApplication>
+#include <QTextCodec>
+
+#include "MainWindow.h"
 
 int main(int argc, char * argv[])
 {
     QApplication a(argc, argv);
+
+    QTextCodec * codec = QTextCodec::codecForName("UTF-8");
+    QTextCodec::setCodecForLocale(codec);
+
     MainWindow w;
     w.show();
 
