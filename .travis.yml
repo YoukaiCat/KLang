@@ -5,7 +5,7 @@ dist: trusty
 
 matrix:
     include:
-        - compiler: gcc
+        - compiler: clang
 
 before_install:
   - sudo apt-get update -qq
