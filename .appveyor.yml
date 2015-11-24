@@ -14,3 +14,8 @@ build_script:
   - jom
   - windeployqt --no-system-d3d-compiler --no-translations release
   - jom install
+
+artifacts:
+  - name: KLang
+    path: release
+    type: zip
