@@ -114,7 +114,7 @@ void MainWindow::run()
     auto ast = parser->parse();
     interpreter = new Interpreter(ast);
 
-    qInfo(ast.inspect().toStdString().c_str());
+    qDebug(ast.inspect().toStdString().c_str());
 
     astGraph = QPixmap::fromImage(ast.printAsGraph());
 
