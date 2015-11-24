@@ -8,7 +8,8 @@ It allows rapid development of robust, concise, correct and high-quality softwar
 * referential transparency  
 * minimal runtime
 
-Travis CI status: [![Build Status](https://travis-ci.org/YoukaiCat/KLang.svg)](https://travis-ci.org/YoukaiCat/KLang)
+Travis CI status (Ubuntu GNU/Linux builds): [![Build Status](https://travis-ci.org/YoukaiCat/KLang.svg)](https://travis-ci.org/YoukaiCat/KLang)
+Appveyor CI status (Windows builds): [![Build status](https://ci.appveyor.com/api/projects/status/github/youkaicat/klang?branch=master&svg=true)](https://ci.appveyor.com/project/youkaicat/klang/branch/master)
 
 ## EBNF
 ```
