@@ -14,7 +14,7 @@ build_script:
   - qmake.exe KLang.pro -r -spec win32-msvc2013
   - VcVars32
   - jom
-  - windeployqt --no-system-d3d-compiler --no-translations release
+  - windeployqt --no-system-d3d-compiler --no-translations release\package
   - jom install
 
 artifacts:
