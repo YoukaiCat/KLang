@@ -19,7 +19,7 @@ build_script:
 
 artifacts:
   - path: release
-    name: KLang.zip
+    name: KLang-$(APPVEYOR_BUILD_VERSION).zip
     type: zip
 
 deploy:
@@ -27,7 +27,7 @@ deploy:
   provider: GitHub
   auth_token:
     secure: f1qLXI72FZwkMS6SHE+dBvV4N9t3AZzUOpxexMXs2h79b3mVqTgZ/1Mw3x/L+rSj
-  artifact: KLang.zip
+  artifact: KLang-$(APPVEYOR_BUILD_VERSION).zip
   draft: false
   prerelease: true
   on:
