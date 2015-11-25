@@ -1,4 +1,4 @@
-version: 0.1.1
+version: 0.1.1-{build}
 
 environment:
   matrix:
@@ -19,7 +19,7 @@ build_script:
 
 artifacts:
   - path: release
-    name: KLang-$(APPVEYOR_BUILD_VERSION)
+    name: KLang-$(APPVEYOR_BUILD_VERSION)_win_x86_32
     type: zip
 
 deploy:
@@ -27,7 +27,7 @@ deploy:
   provider: GitHub
   auth_token:
     secure: f1qLXI72FZwkMS6SHE+dBvV4N9t3AZzUOpxexMXs2h79b3mVqTgZ/1Mw3x/L+rSj
-  artifact: KLang-$(APPVEYOR_BUILD_VERSION)
+  artifact: KLang-$(APPVEYOR_BUILD_VERSION)_win_x86_32
   draft: false
   prerelease: true
   on:
