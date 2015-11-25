@@ -113,6 +113,7 @@ Node Parser::createAssignment()
 Node Parser::expression()
 {
     if (tokens.first().getType() == Lexeme::Minus) {
+        tokens.takeFirst();
         return Node(Token(Lexeme::UnaryMinus, "", 0, 0)).addChild(additiveExpression());
     } else {
         return additiveExpression();

@@ -127,7 +127,7 @@ private slots:
             Окончание
         )doc";
         auto result = interpret(source);
-        QCOMPARE(result["а"], 3.0);
+        QCOMPARE(result["а"], -3.0);
         QCOMPARE(result["б"], 10.0);
         QCOMPARE(result["в"], 0.0);
         QCOMPARE(result["г"], 11.0);
