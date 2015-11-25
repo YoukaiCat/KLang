@@ -39,7 +39,8 @@ win32 {
 
     }
     CONFIG(release, release|debug) {
-        DESTDIR = release
+        DESTDIR = release\package
+        TARGET.path = $$DESTDIR
         GraphVizLibs.path = $$DESTDIR
         LIBS += \
             "C:/Program Files (x86)/Graphviz2.38/lib/release/lib/gvc.lib" \
@@ -55,7 +56,6 @@ win32 {
             "C:\Program Files (x86)\Graphviz2.38\lib\release\dll\gvplugin_gd.dll" \
             "C:\Program Files (x86)\Graphviz2.38\lib\release\dll\cgraph.dll"
     }
-    GraphVizLibs.CONFIG = no_check_exist
     INSTALLS += GraphVizLibs
 } else {
     LIBS += -lgvc -lcgraph
