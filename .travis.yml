@@ -11,6 +11,12 @@ before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq qt5-default qttools5-dev-tools graphviz-dev
 
+# QtTest requires X server
+before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sleep 3 # give xvfb some time to start
+
 script:
   - qmake
   - make
