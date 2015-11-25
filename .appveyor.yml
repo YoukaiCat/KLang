@@ -19,7 +19,7 @@ build_script:
   - jom check
 
 artifacts:
-  - path: release\package
+  - path: KLang\release\package
     name: KLang-$(APPVEYOR_BUILD_VERSION)_win_x86_32
     type: zip
 

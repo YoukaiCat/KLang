@@ -5,7 +5,7 @@ TARGET = klang
 
 CONFIG += warn_on staticlib
 
-include(../includes.pri)
+include(../QMake/includes.pri)
 
 SOURCES += \
     src/MainWindow.cpp \
@@ -37,4 +37,4 @@ FORMS += \
     ui/MainWindow.ui \
     ui/ASTGraphDialog.ui
 
-include(../compiler.pri)
+include(../QMake/compiler.pri)
