@@ -31,7 +31,7 @@ private:
     QList<Node> declareIds();
     Node assignments();
     Node createAssignment();
-    Node expression();
+    Node unaryMinus();
     Node additiveExpression();
     Node multiplicativeExpression();
     Node booleanBinaryExpression();

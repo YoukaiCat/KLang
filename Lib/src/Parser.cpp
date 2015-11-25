@@ -104,30 +104,37 @@ Node Parser::createAssignment()
 {
     auto idToken = tokens.takeFirst();
     auto eqToken = tokens.takeFirst();
-    return Node(eqToken).addChild(Node(idToken)).addChild(expression());
+    return Node(eqToken).addChild(Node(idToken)).addChild(additiveExpression());
 }
 
 // Classic recursive-descent parser for expressions
 // Inefficient, boilerplate and hardcoded,
 // but close to grammar rules and easy to understand
-Node Parser::expression()
-{
-    if (tokens.first().getType() == Lexeme::Minus) {
-        tokens.takeFirst();
-        return Node(Token(Lexeme::UnaryMinus, "", 0, 0)).addChild(additiveExpression());
-    } else {
-        return additiveExpression();
-    }
-}
-
 Node Parser::additiveExpression()
 {
-    auto node = multiplicativeExpression();
+    //Выражение более высокого приоретета либо его отрицание
+    Node node;
+    if (tokens.first().getType() == Lexeme::Minus) {
+        //Eсли унарный минус есть, создаётся нода с отрицанием выражения высшего приоретета
+        node = unaryMinus();
+    } else {
+        //Иначе возвращается нода выражения высшего приоретета
+        node = multiplicativeExpression();
+    }
     while (tokens.first().getType() == Lexeme::Plus || tokens.first().getType() == Lexeme::Minus) {
         auto sign = tokens.takeFirst();
         node = Node(sign).addChild(node).addChild(multiplicativeExpression());
     }
     return node;
+}
+
+Node Parser::unaryMinus()
+{
+    //Унарный минус по BNF должен одинаковый приоретет с + - и ниже * /
+    //Однако, может стоять только в левой части выражения, тем самым, всегда в приоретете над + -
+    auto token = tokens.takeFirst();
+    auto unaryMinus = Token(Lexeme::UnaryMinus, token.getValue(), token.getIndexBegin(), token.getIndexEnd());
+    return Node(unaryMinus).addChild(multiplicativeExpression());
 }
 
 Node Parser::multiplicativeExpression()
@@ -167,7 +174,7 @@ Node Parser::base()
         return Node(token);
     } else if (token.getType() == Lexeme::LeftParentheses) {
         paranthesisIndices.push(token.getIndexBegin());
-        auto node = expression();
+        auto node = additiveExpression();
         if (tokens.first().getType() == Lexeme::RightParentheses) {
             tokens.takeFirst();
             paranthesisIndices.pop();

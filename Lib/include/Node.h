@@ -19,6 +19,7 @@
 class Node
 {
 public:
+    Node();
     Node(const Token & token);
 
     Node & addChild(const Node & node);

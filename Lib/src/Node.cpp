@@ -11,6 +11,9 @@
 #include <QUuid>
 #include <QByteArray>
 
+Node::Node() : token(Token(Lexeme::Eof, "", 0, 0))
+{}
+
 Node::Node(const Token & token)
     : token(token)
 {}
