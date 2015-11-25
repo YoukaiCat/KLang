@@ -1,13 +1,13 @@
-QT += core gui widgets
+QT += widgets
 
 TEMPLATE = app
 
 SOURCES += main.cpp
 
-LIBS += ../Lib/libklang.a
-
-include(../includes.pri)
 include(../compiler.pri)
+include(../includes.pri)
+include(../libklang.pri)
 include(../libs.pri)
+include(../installation.pri)
 
 RESOURCES += KLang.qrc

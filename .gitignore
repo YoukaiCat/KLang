@@ -2,9 +2,11 @@ KLang.pro.user*
 Makefile*
 *.o
 *.obj
+*.lib
 *.exe
+*.moc
 moc_*
 ui_*
 qrc_*
 config6
-
+build/

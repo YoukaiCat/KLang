@@ -1,4 +1,4 @@
-QT += core gui widgets
+QT += widgets
 
 TEMPLATE = lib
 TARGET = klang
