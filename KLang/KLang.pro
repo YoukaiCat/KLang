@@ -10,4 +10,4 @@ include(../QMake/libklang.pri)
 include(../QMake/libs.pri)
 include(../QMake/installation.pri)
 
-RESOURCES += KLang.qrc
+RESOURCES += $$PWD/../KLang.qrc
