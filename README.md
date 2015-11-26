@@ -19,20 +19,16 @@ program = "Начало",
           "Окончание" ;
 declaration = ( "Анализ", identifier )
             | ( "Синтез", ( identifier | ( { identifier, "," }, identifier ) ) ) ;
-assignment = identifier, "=", expression ;
-expression = [ "-" ], additive-expression ;
-additive-expression = ( additive-expression, ( "+" | "-" ), multiplicative-expression )
-                    | multiplicative-expression ;
-multiplicative-expression = ( multiplicative-expression, ( "*" | "/" ), boolean-binary-expression )
-                          | boolean-binary-expression ;
-boolean-binary-expression = ( boolean-binary-expression, ("И" | "ИЛИ"), not-expression )
-                          | not-expression ;
-not-expression = ("НЕ", base)
+assignment = identifier, "=", additive-expression ;
+additive-expression = [ "-" ], multiplicative-expression, { ( "+" | "-" ), multiplicative-expression } ;
+multiplicative-expression = boolean-binary-expression, { ( "*" | "/" ), boolean-binary-expression } ;
+boolean-binary-expression = not-expression, { ( "И" | "ИЛИ" ), not-expression } ;
+not-expression = ( "НЕ", base )
                | base ;
 base = ( "(", expression, ")" )
      | identifier
      | real ;
-identifier = letter, 3 * [digit] ;
+identifier = letter, 3 * [ digit ] ;
 letter = lower | upper
 lower = "а" | "б" | "в" | "г" | "д" | "е" | "ё"
       | "ж" | "з" | "и" | "й" | "к" | "л" | "м"
