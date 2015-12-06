@@ -3,7 +3,11 @@ QT += widgets
 TEMPLATE = lib
 TARGET = klang
 
-CONFIG += warn_on
+CONFIG += warn_on shared
+# link with .lib and use .dll later
+win32:CONFIG += static
+
+DEFINES += KLANG_LIBRARY
 
 include(../QMake/includes.pri)
 
@@ -25,6 +29,8 @@ HEADERS += \
     include/Parser.h \
     include/Node.h \
     include/Interpreter.h \
-    include/Error.h
+    include/Error.h \
+    include/KLang_global.h
 
 include(../QMake/compiler.pri)
+include(../QMake/libs.pri)

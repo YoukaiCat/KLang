@@ -1,0 +1,10 @@
+#ifndef KLANG_GLOBAL_H
+#define KLANG_GLOBAL_H
+
+#if defined(KLANG_LIBRARY)
+#  define KLANG_LIBRARY_EXPORT Q_DECL_EXPORT
+#else
+#  define KLANG_LIBRARY_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // KLANG_GLOBAL_H
