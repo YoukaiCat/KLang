@@ -1,4 +1,4 @@
-INCLUDEPATH += ../Lib/include/
+INCLUDEPATH += ../KLang/include/
 win32 {
     INCLUDEPATH += "C:/Program Files (x86)/Graphviz2.38/include/"
 }

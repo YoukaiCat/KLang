@@ -1,10 +1,10 @@
 win32 {
     CONFIG(debug, debug|release) {
-        LIBS += ../Lib/release/klang.lib
+        LIBS += -L../KLang/release/ -lklang
     }
     CONFIG(release, release|debug) {
-        LIBS += ../Lib/release/klang.lib
+        LIBS += -L../KLang/release/ -lklang
     }
 } else {
-    LIBS += ../Lib/libklang.a
+    LIBS += -L../KLang/ -lklang
 }

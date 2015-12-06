@@ -3,9 +3,9 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS = \
-    Lib \
     KLang \
+    KLangIDE \
     KLangUnitTest
 
-KLang.depends = Lib
-KLangUnitTest.depends = Lib
+KLangIDE.depends = KLang
+KLangUnitTest.depends = KLang
