@@ -8,7 +8,6 @@ CONFIG += warn_on
 include(../QMake/includes.pri)
 
 SOURCES += \
-    src/MainWindow.cpp \
     src/Token.cpp \
     src/Lexeme.cpp \
     src/Source.cpp \
@@ -16,12 +15,9 @@ SOURCES += \
     src/Parser.cpp \
     src/Node.cpp \
     src/Interpreter.cpp \
-    src/Error.cpp \
-    src/SyntaxHighlighter.cpp \
-    src/ASTGraphDialog.cpp
+    src/Error.cpp
 
 HEADERS += \
-    include/MainWindow.h \
     include/Token.h \
     include/Lexeme.h \
     include/Source.h \
@@ -29,12 +25,6 @@ HEADERS += \
     include/Parser.h \
     include/Node.h \
     include/Interpreter.h \
-    include/Error.h \
-    include/SyntaxHighlighter.h \
-    include/ASTGraphDialog.h
-
-FORMS += \
-    ui/MainWindow.ui \
-    ui/ASTGraphDialog.ui
+    include/Error.h
 
 include(../QMake/compiler.pri)
