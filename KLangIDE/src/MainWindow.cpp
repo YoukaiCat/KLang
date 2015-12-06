@@ -155,9 +155,6 @@ void MainWindow::onError(Error e)
     QTextCharFormat fmt;
     fmt.setBackground(Qt::red);
 
-    qDebug() << e.getBegin();
-    qDebug() << e.getEnd();
-
     cursor->setPosition(e.getBegin(), QTextCursor::MoveAnchor);
     cursor->setPosition(e.getEnd(), QTextCursor::KeepAnchor);
     cursor->setCharFormat(fmt);
