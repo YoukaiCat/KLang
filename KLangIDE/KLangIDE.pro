@@ -5,10 +5,10 @@ TEMPLATE = app
 INCLUDEPATH += include
 
 SOURCES += \
+    main.cpp \
     src/MainWindow.cpp \
     src/SyntaxHighlighter.cpp \
-    src/ASTGraphDialog.cpp \
-    main.cpp
+    src/ASTGraphDialog.cpp
 
 HEADERS += \
     include/MainWindow.h \
