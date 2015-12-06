@@ -4,6 +4,8 @@ Makefile*
 *.o
 *.obj
 *.lib
+*.exp
+*.dll
 *.exe
 *.moc
 moc_*

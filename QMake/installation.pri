@@ -24,7 +24,8 @@ win32 {
             "C:\Program Files (x86)\Graphviz2.38\lib\debug\dll\gvplugin_gdiplus.dll" \
             "C:\Program Files (x86)\Graphviz2.38\lib\debug\dll\gvplugin_gd.dll" \
             "C:\Program Files (x86)\Graphviz2.38\lib\debug\dll\cgraph.dll"
-
+        KLang.path = $$DESTDIR
+        KLang.files += ../KLang/debug/klang.dll
     }
     CONFIG(release, release|debug) {
         DESTDIR = release\package
@@ -39,6 +40,8 @@ win32 {
             "C:\Program Files (x86)\Graphviz2.38\lib\release\dll\gvplugin_gdiplus.dll" \
             "C:\Program Files (x86)\Graphviz2.38\lib\release\dll\gvplugin_gd.dll" \
             "C:\Program Files (x86)\Graphviz2.38\lib\release\dll\cgraph.dll"
+        KLang.path = $$DESTDIR
+        KLang.files += ../KLang/release/klang.dll
     }
-    INSTALLS += GraphVizLibs
+    INSTALLS += GraphVizLibs KLang
 }

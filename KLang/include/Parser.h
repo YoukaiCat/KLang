@@ -16,7 +16,9 @@
 
 #include <QStack>
 
-class Parser : public QObject
+#include "KLang_global.h"
+
+class KLANG_LIBRARY_EXPORT Parser : public QObject
 {
     Q_OBJECT
 public:

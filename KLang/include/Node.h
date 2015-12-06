@@ -16,7 +16,9 @@
 
 #include <graphviz/gvc.h>
 
-class Node
+#include "KLang_global.h"
+
+class KLANG_LIBRARY_EXPORT Node
 {
 public:
     Node();

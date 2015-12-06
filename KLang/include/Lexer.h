@@ -16,7 +16,9 @@
 #include "Token.h"
 #include "Error.h"
 
-class Lexer : public QObject
+#include "KLang_global.h"
+
+class KLANG_LIBRARY_EXPORT Lexer : public QObject
 {
     Q_OBJECT
 public:

@@ -10,6 +10,8 @@
 
 #include <QString>
 
+#include "KLang_global.h"
+
 enum class Lexeme {
     //Keywords
     Begin,

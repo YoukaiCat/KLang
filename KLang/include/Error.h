@@ -11,8 +11,10 @@
 #include <QException>
 #include <QString>
 
+#include "KLang_global.h"
+
 //Исключение, позволяет передать сообщение об ошибке и координаты в исходнике
-class Error : public QException
+class KLANG_LIBRARY_EXPORT Error : public QException
 {
 public:
     explicit Error(const QString & message, int begin, int end);

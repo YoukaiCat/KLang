@@ -16,7 +16,9 @@
 #include "Node.h"
 #include "Error.h"
 
-class Interpreter : public QObject
+#include "KLang_global.h"
+
+class KLANG_LIBRARY_EXPORT Interpreter : public QObject
 {
     Q_OBJECT
 public:

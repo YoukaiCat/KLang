@@ -10,7 +10,9 @@
 
 #include "Lexeme.h"
 
-class Token// : public QObject
+#include "KLang_global.h"
+
+class KLANG_LIBRARY_EXPORT Token// : public QObject
 {
 public:
     Token(const Lexeme & type, const QString & value, int indexBegin, int indexEnd);

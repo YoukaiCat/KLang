@@ -11,6 +11,8 @@
 #include <QObject>
 #include <QStringList>
 
+#include "KLang_global.h"
+
 class Source : public QObject
 {
     Q_OBJECT

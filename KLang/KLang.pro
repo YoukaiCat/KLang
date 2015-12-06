@@ -4,8 +4,6 @@ TEMPLATE = lib
 TARGET = klang
 
 CONFIG += warn_on shared
-# link with .lib and use .dll later
-win32:CONFIG += static
 
 DEFINES += KLANG_LIBRARY
 
