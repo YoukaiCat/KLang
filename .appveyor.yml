@@ -15,6 +15,7 @@ build_script:
   - VcVars32
   - jom
   - windeployqt --no-system-d3d-compiler --no-translations KLangIDE\release\package
+  - qmake.exe KLang.pro -r -spec win32-msvc2013 #run configuration one more time after klang.dll exist
   - jom install
   - jom check
 
