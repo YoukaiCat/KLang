@@ -7,6 +7,7 @@
 
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
+#include "ASTGraphVisualizer.h"
 #include "ASTGraphDialog.h"
 
 #include <math.h>
@@ -57,7 +58,7 @@ void MainWindow::maybeSave()
         ret = QMessageBox::warning(this, tr("Application"),
                      tr("The document has been modified.\n"
                         "Do you want to save your changes?"),
-                     QMessageBox::Save | QMessageBox::Discard |             QMessageBox::Cancel);
+                     QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
 //        if (ret == QMessageBox::Save)
 //            save();
     }
@@ -116,7 +117,7 @@ void MainWindow::run()
 
     qDebug(ast.inspect().toStdString().c_str());
 
-    astGraph = QPixmap::fromImage(ast.printAsGraph());
+    astGraph = QPixmap::fromImage(ASTGraphVisualizer::renderASTAsGraph(ast));
 
     printResult(interpreter->evaluate());
 

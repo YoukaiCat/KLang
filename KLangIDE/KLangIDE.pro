@@ -8,12 +8,14 @@ SOURCES += \
     main.cpp \
     src/MainWindow.cpp \
     src/SyntaxHighlighter.cpp \
-    src/ASTGraphDialog.cpp
+    src/ASTGraphDialog.cpp \
+    src/ASTGraphVisualizer.cpp
 
 HEADERS += \
     include/MainWindow.h \
     include/SyntaxHighlighter.h \
-    include/ASTGraphDialog.h
+    include/ASTGraphDialog.h \
+    include/ASTGraphVisualizer.h
 
 FORMS += \
     ui/MainWindow.ui \

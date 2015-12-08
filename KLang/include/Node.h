@@ -14,8 +14,6 @@
 #include "Lexeme.h"
 #include "Token.h"
 
-#include <graphviz/gvc.h>
-
 #include "KLang_global.h"
 
 class KLANG_LIBRARY_EXPORT Node
@@ -32,11 +30,8 @@ public:
     const QList<Node> & getChildren() const;
 
     QString inspect(int level = 1) const;
-    QImage printAsGraph() const;
 
 private:
-    void nextNode(Agraph_t * graph, Agnode_t * parent) const;
-
     Token token;
     QList<Node> children;
 };

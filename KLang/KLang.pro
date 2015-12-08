@@ -31,4 +31,3 @@ HEADERS += \
     include/KLang_global.h
 
 include(../QMake/compiler.pri)
-include(../QMake/libs.pri)
