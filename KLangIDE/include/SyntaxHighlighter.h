@@ -10,15 +10,15 @@
 
 #include <QSyntaxHighlighter>
 
+#include "Lexeme.h"
+
 class SyntaxHighlighter : public QSyntaxHighlighter
 {
 public:
     SyntaxHighlighter(QTextDocument * parent);
     void highlightBlock(const QString & text);
 private:
-    void setFormatForPatternInText(const QTextCharFormat & format,
-                                   const QString & pattern,
-                                   const QString & text);
+    QTextCharFormat getFormatForLexemeType(const Lexeme & lexeme) const;
 };
 
 #endif // SYNTAXHIGHLIGHTER_H

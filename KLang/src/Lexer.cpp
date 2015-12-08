@@ -9,10 +9,10 @@
 
 #include <QDebug>
 
-Lexer::Lexer(const QString & source, QObject * parent) : QObject(parent)
+Lexer::Lexer(const QString & source, QObject * parent)
+    : QObject(parent)
+    , src(new Source(source, this))
 {
-    src = new Source(source, this);
-
     symbols["("] = Lexeme::LeftParentheses;
     symbols[")"] = Lexeme::RightParentheses;
     symbols["="] = Lexeme::Equality;
@@ -30,6 +30,12 @@ Lexer::Lexer(const QString & source, QObject * parent) : QObject(parent)
     words["И"] = Lexeme::And;
     words["ИЛИ"] = Lexeme::Or;
     words["НЕ"] = Lexeme::Not;
+}
+
+Lexer::Lexer(const QString & source, bool continueDespiteErrors, QObject * parent)
+    : Lexer(source, parent)
+{
+    this->continueDespiteErrors = continueDespiteErrors;
 }
 
 QList<Token> Lexer::tokenize()
@@ -52,7 +58,7 @@ void Lexer::processSource()
         } else if (current.contains(QRegularExpression("^[А-Яа-я]$"))) {
             processWords(current);
         } else {
-            throw Error("Неизвестный символ: '" + current + "'.\nДопустимы только буквы русского алфавита, вещественные числа и знаки операций.", src->getIndex(), src->getIndex() + 1);
+            reportError(Error("Неизвестный символ: '" + current + "'.\nДопустимы только буквы русского алфавита, вещественные числа и знаки операций.", src->getIndex(), src->getIndex() + 1));
         }
     }
 }
@@ -66,7 +72,7 @@ void Lexer::processDigits(QString & current)
     if (current.contains(QRegularExpression("^\\d+\\.\\d+$"))) {
         tokens.append(Token(Lexeme::Num, current, index, src->getIndex() + 1));
     } else {
-        throw Error("Допустимы только вещественные числа.", index, src->getIndex() + 1);
+        reportError(Error("Допустимы только вещественные числа.", index, src->getIndex() + 1));
     }
 }
 
@@ -81,6 +87,13 @@ void Lexer::processWords(QString & current)
     } else if (current.contains(QRegularExpression("^[А-Яа-я]\\d{0,3}$"))) {
         tokens.append(Token(Lexeme::Id, current, index, src->getIndex() + 1));
     } else {
-        throw Error("Недопустимый идентификатор: '" + current + "'.\nКлючевые слова языка: Начало, Анализ, Синтез, Окончание. Переменные могут содержать только букву и до трех цифр после неё.", index, src->getIndex() + 1);
+        reportError(Error("Недопустимый идентификатор: '" + current + "'.\nКлючевые слова языка: Начало, Анализ, Синтез, Окончание. Переменные могут содержать только букву и до трех цифр после неё.", index, src->getIndex() + 1));
+    }
+}
+
+void Lexer::reportError(Error e)
+{
+    if (!continueDespiteErrors) {
+        throw e;
     }
 }

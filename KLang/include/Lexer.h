@@ -23,17 +23,21 @@ class KLANG_LIBRARY_EXPORT Lexer : public QObject
     Q_OBJECT
 public:
     explicit Lexer(const QString & source, QObject * parent = 0);
+    explicit Lexer(const QString & source, bool continueDespiteErrors, QObject * parent = 0);
     QList<Token> tokenize();
 
 private:
     void processSource();
     void processDigits(QString & current);
     void processWords(QString & current);
+    void reportError(Error e);
 
     QMap<QString, Lexeme> symbols;
     QMap<QString, Lexeme> words;
     QList<Token> tokens;
     Source * src;
+
+    bool continueDespiteErrors;
 };
 
 #endif // LEXER_H

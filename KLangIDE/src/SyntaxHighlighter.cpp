@@ -7,59 +7,60 @@
 
 #include "SyntaxHighlighter.h"
 
+#include "Token.h"
 #include "Lexer.h"
-#include "Lexeme.h"
 
 SyntaxHighlighter::SyntaxHighlighter(QTextDocument * parent)
     : QSyntaxHighlighter(parent)
 {}
 
-//Простая подсветка на регулярках
-//Сделать через лексер не получается,
-//так как Qt не любит исключения и они не ловятся в этом методе.
-//Нужно будет возвращать "неизвестные токены" и список ошибок.
 void SyntaxHighlighter::highlightBlock(const QString & text)
 {
-    QTextCharFormat keywordsFormat;
-    keywordsFormat.setFontWeight(QFont::Bold);
-    keywordsFormat.setForeground(Qt::darkCyan);
-    QString keywordsPattern = "\\b(Начало|Анализ|Синтез|Окончание)\\b";
-    setFormatForPatternInText(keywordsFormat, keywordsPattern, text);
-
-    QTextCharFormat numbersFormat;
-    numbersFormat.setFontWeight(QFont::Bold);
-    numbersFormat.setForeground(Qt::darkGray);
-    QString numbersPattern = "\\b\\d+\\.\\d+\\b";
-    setFormatForPatternInText(numbersFormat, numbersPattern, text);
-
-    QTextCharFormat symbolsFormat;
-    symbolsFormat.setFontWeight(QFont::Bold);
-    symbolsFormat.setForeground(Qt::darkGreen);
-    QString symbolsPattern = "(\\=|\\;|\\,|\\(|\\))";
-    setFormatForPatternInText(symbolsFormat, symbolsPattern, text);
-
-    QTextCharFormat operatorsFormat;
-    operatorsFormat.setFontWeight(QFont::Bold);
-    operatorsFormat.setForeground(Qt::darkRed);
-    QString operatorsPattern = "(\\+|\\-|\\*|\\/|И|ИЛИ|НЕ)";
-    setFormatForPatternInText(operatorsFormat, operatorsPattern, text);
-
-    QTextCharFormat idsFormat;
-    idsFormat.setFontWeight(QFont::Bold);
-    idsFormat.setForeground(Qt::darkBlue);
-    QString idsPattern = "\\b[А-Яа-я]\\d{0,3}\\b";
-    setFormatForPatternInText(idsFormat, idsPattern, text);
+    Lexer l(text, true);
+    for (auto token : l.tokenize()) {
+        auto length = token.getIndexEnd() - token.getIndexBegin();
+        auto format = getFormatForLexemeType(token.getType());
+        setFormat(token.getIndexBegin(), length, format);
+    }
 }
 
-void SyntaxHighlighter::setFormatForPatternInText(const QTextCharFormat & format,
-                                                  const QString & pattern,
-                                                  const QString & text)
+QTextCharFormat SyntaxHighlighter::getFormatForLexemeType(const Lexeme & lexeme) const
 {
-    QRegExp expression(pattern);
-    int index = text.indexOf(expression);
-    while (index >= 0) {
-        int length = expression.matchedLength();
-        setFormat(index, length, format);
-        index = text.indexOf(expression, index + length);
+    QTextCharFormat format;
+    format.setFontWeight(QFont::Bold);
+    switch (lexeme) {
+        case Lexeme::Begin:
+        case Lexeme::SingleDeclaration:
+        case Lexeme::MultipleDeclaration:
+        case Lexeme::End:
+            format.setForeground(Qt::darkCyan);
+            break;
+        case Lexeme::LeftParentheses:
+        case Lexeme::RightParentheses:
+        case Lexeme::Equality:
+        case Lexeme::Semicolon:
+        case Lexeme::Comma:
+            format.setForeground(Qt::darkGreen);
+            break;
+        case Lexeme::Plus:
+        case Lexeme::UnaryMinus:
+        case Lexeme::Minus:
+        case Lexeme::Multiply:
+        case Lexeme::Divide:
+        case Lexeme::And:
+        case Lexeme::Or:
+        case Lexeme::Not:
+            format.setForeground(Qt::darkRed);
+            break;
+        case Lexeme::Id:
+            format.setForeground(Qt::darkBlue);
+            break;
+        case Lexeme::Num:
+            format.setForeground(Qt::darkGray);
+            break;
+        default:
+            format.setFontWeight(QFont::Normal);
+            break;
     }
+    return format;
 }
