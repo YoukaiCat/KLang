@@ -128,3 +128,12 @@ digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
 ```
 Ошибка: перед использованием переменной, ей должно быть присвоено значение!
 ```
+
+## IDE features:
+
+* Syntax highlighting
+* Visualizing AST as graph
+* Error highlighting in source code
+* Simple source code editor
+* Running interpreter by hotkey
+
