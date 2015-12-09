@@ -12,6 +12,7 @@
 Lexer::Lexer(const QString & source, QObject * parent)
     : QObject(parent)
     , src(new Source(source, this))
+    , continueDespiteErrors(false)
 {
     symbols["("] = Lexeme::LeftParentheses;
     symbols[")"] = Lexeme::RightParentheses;
