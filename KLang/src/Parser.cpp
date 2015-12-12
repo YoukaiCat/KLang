@@ -6,8 +6,8 @@
  */
 
 #include "Parser.h"
-
-#include <QDebug>
+#include "Error.h"
+#include "Lexeme.h"
 
 Parser::Parser(const QList<Token> & tokens, QObject * parent)
     : QObject(parent)

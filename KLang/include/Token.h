@@ -8,9 +8,9 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 
-#include "Lexeme.h"
-
 #include "KLang_global.h"
+
+#include "Lexeme.h"
 
 class KLANG_LIBRARY_EXPORT Token// : public QObject
 {

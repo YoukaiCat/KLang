@@ -5,9 +5,9 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-#include "Lexer.h"
+#include <QRegularExpression>
 
-#include <QDebug>
+#include "Lexer.h"
 
 Lexer::Lexer(const QString & source, QObject * parent)
     : QObject(parent)

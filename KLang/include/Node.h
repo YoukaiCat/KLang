@@ -8,13 +8,11 @@
 #ifndef NODE_H
 #define NODE_H
 
-#include <QList>
-#include <QImage>
-
-#include "Lexeme.h"
-#include "Token.h"
-
 #include "KLang_global.h"
+
+#include <QList>
+
+#include "Token.h"
 
 class KLANG_LIBRARY_EXPORT Node
 {

@@ -5,12 +5,15 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
+#include <math.h>
+
+#include <QFileDialog>
+#include <QMessageBox>
+
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 #include "ASTGraphVisualizer.h"
 #include "ASTGraphDialog.h"
-
-#include <math.h>
 
 MainWindow::MainWindow(QWidget * parent) :
     QMainWindow(parent),

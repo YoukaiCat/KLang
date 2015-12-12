@@ -8,15 +8,13 @@
 #ifndef PARSER_H
 #define PARSER_H
 
-#include "Lexeme.h"
-#include "Source.h"
-#include "Token.h"
-#include "Node.h"
-#include "Error.h"
+#include "KLang_global.h"
 
+#include <QObject>
 #include <QStack>
 
-#include "KLang_global.h"
+#include "Token.h"
+#include "Node.h"
 
 class KLANG_LIBRARY_EXPORT Parser : public QObject
 {

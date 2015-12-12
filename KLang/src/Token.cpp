@@ -7,8 +7,6 @@
 
 #include "Token.h"
 
-#include <QDebug>
-
 Token::Token(const Lexeme & type, const QString & value,  int indexBegin, int indexEnd)
     : type(type)
     , value(value)

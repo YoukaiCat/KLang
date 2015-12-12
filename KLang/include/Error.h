@@ -8,10 +8,10 @@
 #ifndef ERROR_H
 #define ERROR_H
 
+#include "KLang_global.h"
+
 #include <QException>
 #include <QString>
-
-#include "KLang_global.h"
 
 //Исключение, позволяет передать сообщение об ошибке и координаты в исходнике
 class KLANG_LIBRARY_EXPORT Error : public QException

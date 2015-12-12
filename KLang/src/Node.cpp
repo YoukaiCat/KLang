@@ -6,6 +6,7 @@
  */
 
 #include "Node.h"
+#include "Lexeme.h"
 
 Node::Node() : token(Token(Lexeme::Eof, "", 0, 0))
 {}

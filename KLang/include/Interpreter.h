@@ -8,15 +8,13 @@
 #ifndef INTERPRETER_H
 #define INTERPRETER_H
 
+#include "KLang_global.h"
+
+#include <QObject>
 #include <QMap>
 
-#include "Lexeme.h"
-#include "Source.h"
 #include "Token.h"
 #include "Node.h"
-#include "Error.h"
-
-#include "KLang_global.h"
 
 class KLANG_LIBRARY_EXPORT Interpreter : public QObject
 {

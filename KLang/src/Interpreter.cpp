@@ -6,8 +6,7 @@
  */
 
 #include "Interpreter.h"
-
-#include <QDebug>
+#include "Error.h"
 
 Interpreter::Interpreter(const Node & ast, QObject * parent)
     : QObject(parent)

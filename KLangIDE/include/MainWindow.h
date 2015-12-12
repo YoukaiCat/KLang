@@ -11,12 +11,8 @@
 #include <QtWidgets/QMainWindow>
 
 #include <QSplitter>
-#include <QPlainTextEdit>
 #include <QTextEdit>
 #include <QVBoxLayout>
-#include <QDebug>
-#include <QFileDialog>
-#include <QMessageBox>
 #include <QTextBrowser>
 #include <QPixmap>
 

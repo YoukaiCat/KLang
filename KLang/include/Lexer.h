@@ -8,15 +8,14 @@
 #ifndef LEXER_H
 #define LEXER_H
 
+#include "KLang_global.h"
+
 #include <QMap>
-#include <QRegularExpression>
 
 #include "Lexeme.h"
 #include "Source.h"
 #include "Token.h"
 #include "Error.h"
-
-#include "KLang_global.h"
 
 class KLANG_LIBRARY_EXPORT Lexer : public QObject
 {

@@ -8,10 +8,10 @@
 #ifndef SOURCE_H
 #define SOURCE_H
 
+#include "KLang_global.h"
+
 #include <QObject>
 #include <QStringList>
-
-#include "KLang_global.h"
 
 class Source : public QObject
 {

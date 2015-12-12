@@ -1,6 +1,5 @@
 #include "include/ASTGraphVisualizer.h"
 
-#include <QDebug>
 #include <QUuid>
 #include <QByteArray>
 

@@ -3,6 +3,8 @@
 
 #include <graphviz/gvc.h>
 
+#include <QImage>
+
 #include "Node.h"
 
 class ASTGraphVisualizer

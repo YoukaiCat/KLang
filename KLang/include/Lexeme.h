@@ -8,9 +8,9 @@
 #ifndef LEXEME
 #define LEXEME
 
-#include <QString>
-
 #include "KLang_global.h"
+
+#include <QString>
 
 enum class Lexeme {
     //Keywords
