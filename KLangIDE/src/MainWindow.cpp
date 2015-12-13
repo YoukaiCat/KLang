@@ -162,6 +162,7 @@ void MainWindow::onError(Error e)
     cleared = false;
 }
 
+//TODO пофиксить 1.0, 2.0 и т.д
 void MainWindow::printResult(const shared_ptr<QMap<QString, double>> map) const
 {
     console->setText("");
