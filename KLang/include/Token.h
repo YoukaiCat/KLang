@@ -23,6 +23,7 @@ public:
     int getIndexBegin() const;
     int getIndexEnd() const;
 
+    QString toString() const;
     QString inspect() const;
 
 private:

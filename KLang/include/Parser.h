@@ -42,6 +42,7 @@ private:
     shared_ptr<Node> notExpression();
     shared_ptr<Node> base();
     shared_ptr<Node> end();
+    QString tokenToString(const Token & token);
 
     shared_ptr<QList<Token>> tokens;
     QStack<int> paranthesisIndices;
