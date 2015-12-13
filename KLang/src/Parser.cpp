@@ -41,11 +41,11 @@ shared_ptr<Node> Parser::begin()
 shared_ptr<Node> Parser::declarations()
 {
     if (tokens->first().getType() == Lexeme::SingleDeclaration || tokens->first().getType() == Lexeme::MultipleDeclaration) {
-        auto declarations = make_shared<QList<shared_ptr<Node>>>(QList<shared_ptr<Node>>());
-        declarations->append(processDeclarations());
+        auto declarations = QList<shared_ptr<Node>>();
+        declarations.append(processDeclarations());
         while (tokens->first().getType() == Lexeme::Semicolon && (tokens->at(1).getType() == Lexeme::SingleDeclaration || tokens->at(1).getType() == Lexeme::MultipleDeclaration)) {
             tokens->takeFirst();
-            declarations->append(processDeclarations());
+            declarations.append(processDeclarations());
         }
         auto node = make_shared<Node>(Node(Token(Lexeme::Declarations, "", 0, 0)));
         node->addChildren(declarations);
@@ -64,7 +64,7 @@ shared_ptr<Node> Parser::processDeclarations()
         return node;
     } else if (token.getType() == Lexeme::MultipleDeclaration) {
         auto node = make_shared<Node>(Node(token));
-        node->addChildren(declareIds());
+        node->addChildren(*declareIds());
         return node;
     } else {
         throw Error(QString("Ожидалось ключевое слово \"Анализ\" или слово \"Синтез\", но получено '") + token.getValue() + "'", token.getIndexBegin(), token.getIndexEnd());
@@ -99,10 +99,10 @@ shared_ptr<QList<shared_ptr<Node>>> Parser::declareIds()
 shared_ptr<Node> Parser::assignments()
 {
     if (tokens->first().getType() == Lexeme::Id && tokens->at(1).getType() == Lexeme::Equality) {
-        auto as = make_shared<QList<shared_ptr<Node>>>(QList<shared_ptr<Node>>());
-        as->append(createAssignment());
+        auto as = QList<shared_ptr<Node>>();
+        as.append(createAssignment());
         while (tokens->first().getType() == Lexeme::Id && tokens->at(1).getType() == Lexeme::Equality) {
-            as->append(createAssignment());
+            as.append(createAssignment());
         }
         auto node = make_shared<Node>(Node(Token(Lexeme::Assignments, "", 0, 0)));
         node->addChildren(as);

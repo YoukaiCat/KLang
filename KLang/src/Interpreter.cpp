@@ -28,11 +28,11 @@ shared_ptr<QMap<QString, double>> Interpreter::getVariables() const
 
 void Interpreter::declarations(const shared_ptr<Node> declarationsNode)
 {
-    for (auto declaration : *declarationsNode->getChildren()) {
+    for (auto declaration : declarationsNode->getChildren()) {
         if (declaration->getToken().getType() == Lexeme::SingleDeclaration) {
             addVariable(declaration->at(0));
         } else if (declaration->getToken().getType() == Lexeme::MultipleDeclaration) {
-            for (auto id : *declaration->getChildren()) {
+            for (auto id : declaration->getChildren()) {
                 addVariable(id);
             }
         }
@@ -51,7 +51,7 @@ void Interpreter::addVariable(const shared_ptr<Node> id)
 
 void Interpreter::assignments(const shared_ptr<Node> assignmentsNode)
 {
-    for (auto assignment : *assignmentsNode->getChildren()) {
+    for (auto assignment : assignmentsNode->getChildren()) {
         (*variables)[assignment->at(0)->getToken().getValue()] = expression(assignment->at(1));
     }
 }

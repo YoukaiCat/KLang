@@ -11,8 +11,8 @@
 
 Lexer::Lexer(const QString & source, QObject * parent)
     : QObject(parent)
-    , src(Source(source))
     , tokens(std::make_shared<QList<Token>>(QList<Token>()))
+    , src(Source(source))
     , continueDespiteErrors(false)
 {
     symbols["("] = Lexeme::LeftParentheses;

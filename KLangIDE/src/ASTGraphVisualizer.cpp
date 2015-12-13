@@ -28,7 +28,11 @@ QImage ASTGraphVisualizer::renderASTAsGraph(const shared_ptr<Node> astRoot)
     gvFreeLayout(gvc, graph);
     agclose(graph);
 
-    return QImage::fromData((uchar *)*image, len, "png");
+    auto qimage = QImage::fromData((uchar *)*image, len, "png");
+
+    free(image);
+
+    return qimage;
 }
 
 void ASTGraphVisualizer::nextNode(const shared_ptr<Node> astNode, Agraph_t * graph, Agnode_t * parent)
@@ -39,7 +43,7 @@ void ASTGraphVisualizer::nextNode(const shared_ptr<Node> astNode, Agraph_t * gra
     agsafeset(node, (char *)"fontsize", (char *)"10", (char *)"");
     agsafeset(node, (char *)"margin", (char *)"0.3,0.005", (char *)"");
     agedge(graph, parent, node, 0, 1);
-    for (auto child : *astNode->getChildren()) {
+    for (auto child : astNode->getChildren()) {
         nextNode(child, graph, node);
     }
 }

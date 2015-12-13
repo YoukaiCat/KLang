@@ -13,24 +13,23 @@
 
 Node::Node(const Token & token)
     : token(token)
-    , children(std::make_shared<QList<shared_ptr<Node>>>(QList<shared_ptr<Node>>()))
 {}
 
 Node * Node::addChild(const shared_ptr<Node> node)
 {
-    children->append(node);
+    children.append(node);
     return this;
 }
 
-Node * Node::addChildren(const shared_ptr<QList<shared_ptr<Node>>> nodes)
+Node * Node::addChildren(const QList<shared_ptr<Node>> & nodes)
 {
-    children->append(*nodes);
+    children.append(nodes);
     return this;
 }
 
 const shared_ptr<Node> Node::at(int index) const
 {
-    return children->at(index);
+    return children.at(index);
 }
 
 const Token & Node::getToken() const
@@ -38,7 +37,7 @@ const Token & Node::getToken() const
     return token;
 }
 
-const shared_ptr<QList<shared_ptr<Node>>> Node::getChildren() const
+const QList<shared_ptr<Node>> & Node::getChildren() const
 {
     return children;
 }
@@ -53,8 +52,8 @@ QString Node::inspect(int level) const
     }
     space.fill(' ', level * 2);
     str += space + token.inspect() + "\n";
-    for (auto i = 0; i < children->size(); i++) {
-        str += space + children->at(i)->inspect(level + 1);
+    for (auto i = 0; i < children.size(); i++) {
+        str += space + children.at(i)->inspect(level + 1);
     }
     return str;
 }

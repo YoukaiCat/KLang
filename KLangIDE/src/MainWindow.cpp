@@ -56,15 +56,15 @@ MainWindow::MainWindow(QWidget * parent) :
 
 void MainWindow::maybeSave()
 {
-    if (editor->document()->isModified()) {
-        QMessageBox::StandardButton ret;
-        ret = QMessageBox::warning(this, tr("Application"),
-                     tr("The document has been modified.\n"
-                        "Do you want to save your changes?"),
-                     QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+//    if (editor->document()->isModified()) {
+//        QMessageBox::StandardButton ret;
+//        ret = QMessageBox::warning(this, tr("Application"),
+//                     tr("The document has been modified.\n"
+//                        "Do you want to save your changes?"),
+//                     QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
 //        if (ret == QMessageBox::Save)
 //            save();
-    }
+//    }
 }
 
 MainWindow::~MainWindow()
@@ -123,10 +123,6 @@ void MainWindow::run()
     astGraph = QPixmap::fromImage(ASTGraphVisualizer::renderASTAsGraph(ast));
 
     printResult(interpreter->evaluate());
-
-    delete lexer;
-    delete parser;
-    delete interpreter;
 }
 
 void MainWindow::on_actionRun_triggered()
