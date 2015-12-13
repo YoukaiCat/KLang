@@ -32,7 +32,7 @@ shared_ptr<Node> Parser::begin()
         node->addChild(declarationsNode)->addChild(assignmentsNode)->addChild(endNode);
         return node;
     } else {
-        throw Error(QString("Ожидалось ключевое слово \"Начало\", но получено '") + token.getValue() + "'", token.getIndexBegin(), token.getIndexEnd());
+        throw Error(100, QString("Ожидалось ключевое слово \"Начало\", но получено '") + token.getValue() + "'", token.getIndexBegin(), token.getIndexEnd());
     }
 }
 
@@ -51,7 +51,7 @@ shared_ptr<Node> Parser::declarations()
         node->addChildren(declarations);
         return node;
     } else {
-        throw Error(QString("Ожидалось ключевое слово \"Анализ\" или слово \"Синтез\", но получено '") + tokens->first().getValue() + "'", tokens->first().getIndexBegin(), tokens->first().getIndexEnd());
+        throw Error(101, QString("Ожидалось ключевое слово \"Анализ\" или слово \"Синтез\", но получено '") + tokens->first().getValue() + "'", tokens->first().getIndexBegin(), tokens->first().getIndexEnd());
     }
 }
 
@@ -67,7 +67,7 @@ shared_ptr<Node> Parser::processDeclarations()
         node->addChildren(*declareIds());
         return node;
     } else {
-        throw Error(QString("Ожидалось ключевое слово \"Анализ\" или слово \"Синтез\", но получено '") + token.getValue() + "'", token.getIndexBegin(), token.getIndexEnd());
+        throw Error(102, QString("Ожидалось ключевое слово \"Анализ\" или слово \"Синтез\", но получено '") + token.getValue() + "'", token.getIndexBegin(), token.getIndexEnd());
     }
 }
 
@@ -77,7 +77,7 @@ shared_ptr<Node> Parser::declareId()
     if (token.getType() == Lexeme::Id) {
         return make_shared<Node>(Node(token));
     } else {
-        throw Error(QString("После слова \"Анализ\" ожидался идентификатор, но получено '") + token.getValue() + "'", token.getIndexBegin(), token.getIndexEnd());
+        throw Error(103, QString("После слова \"Анализ\" ожидался идентификатор, но получено '") + token.getValue() + "'", token.getIndexBegin(), token.getIndexEnd());
     }
 }
 
@@ -92,7 +92,7 @@ shared_ptr<QList<shared_ptr<Node>>> Parser::declareIds()
         }
         return ids;
     } else {
-        throw Error(QString("Ожидался идентификатор после слова \"Синтез\", но получено '") + tokens->first().getValue() + "'", tokens->first().getIndexBegin(), tokens->first().getIndexEnd());
+        throw Error(104, QString("Ожидался идентификатор после слова \"Синтез\", но получено '") + tokens->first().getValue() + "'", tokens->first().getIndexBegin(), tokens->first().getIndexEnd());
     }
 }
 
@@ -108,7 +108,7 @@ shared_ptr<Node> Parser::assignments()
         node->addChildren(as);
         return node;
     } else {
-        throw Error(QString("После объявления переменных ожидались присваивания, но получено '") + tokens->first().getValue() + "'", tokens->first().getIndexBegin(), tokens->first().getIndexEnd());
+        throw Error(105, QString("После объявления переменных ожидались присваивания, но получено '") + tokens->first().getValue() + "'", tokens->first().getIndexBegin(), tokens->first().getIndexEnd());
     }
 }
 
@@ -204,10 +204,10 @@ shared_ptr<Node> Parser::base()
             paranthesisIndices.pop();
             return node;
         } else {
-            throw Error(QString("Не найдена закрывающая скобка."), paranthesisIndices.pop(), tokens->first().getIndexEnd());
+            throw Error(106, QString("Не найдена закрывающая скобка."), paranthesisIndices.pop(), tokens->first().getIndexEnd());
         }
     } else {
-        throw Error(QString("Ожидалось число, идентификатор или открывающая скобка, но получено '") + token.getValue() + "'", token.getIndexBegin(), token.getIndexEnd());
+        throw Error(107, QString("Ожидалось число, идентификатор или открывающая скобка, но получено '") + token.getValue() + "'", token.getIndexBegin(), token.getIndexEnd());
     }
 }
 
@@ -218,9 +218,9 @@ shared_ptr<Node> Parser::end()
         if (tokens->first().getType() == Lexeme::Eof) {
             return make_shared<Node>(Node(token));
         } else {
-            throw Error(QString("После ключевого слова \"Окончание\" не должны находиться ключевые слова, идентификаторы и знаки операций. Получено '") + tokens->first().getValue() + "'", tokens->first().getIndexBegin(), tokens->first().getIndexEnd());
+            throw Error(108, QString("После ключевого слова \"Окончание\" не должны находиться ключевые слова, идентификаторы и знаки операций. Получено '") + tokens->first().getValue() + "'", tokens->first().getIndexBegin(), tokens->first().getIndexEnd());
         }
     } else {
-        throw Error(QString("Ожидалось ключевое слово \"Окончание\", но получено '") + token.getValue() + "'", token.getIndexBegin(), token.getIndexEnd());
+        throw Error(109, QString("Ожидалось ключевое слово \"Окончание\", но получено '") + token.getValue() + "'", token.getIndexBegin(), token.getIndexEnd());
     }
 }

@@ -60,7 +60,7 @@ void Lexer::processSource()
         } else if (current.contains(QRegularExpression("^[А-Яа-я]$"))) {
             processWords(current);
         } else {
-            reportError(Error("Неизвестный символ: '" + current + "'.\nДопустимы только буквы русского алфавита, вещественные числа и знаки операций.", src.getIndex(), src.getIndex() + 1));
+            reportError(Error(1, "Неизвестный символ: '" + current + "'.\nДопустимы только буквы русского алфавита, вещественные числа и знаки операций.", src.getIndex(), src.getIndex() + 1));
         }
     }
 }
@@ -74,7 +74,7 @@ void Lexer::processDigits(QString & current)
     if (current.contains(QRegularExpression("^\\d+\\.\\d+$"))) {
         tokens->append(Token(Lexeme::Num, current, index, src.getIndex() + 1));
     } else {
-        reportError(Error("Допустимы только вещественные числа.", index, src.getIndex() + 1));
+        reportError(Error(2, "Допустимы только вещественные числа.", index, src.getIndex() + 1));
     }
 }
 
@@ -89,7 +89,7 @@ void Lexer::processWords(QString & current)
     } else if (current.contains(QRegularExpression("^[А-Яа-я]\\d{0,3}$"))) {
         tokens->append(Token(Lexeme::Id, current, index, src.getIndex() + 1));
     } else {
-        reportError(Error("Недопустимый идентификатор: '" + current + "'.\nКлючевые слова языка: Начало, Анализ, Синтез, Окончание. Переменные могут содержать только букву и до трех цифр после неё.", index, src.getIndex() + 1));
+        reportError(Error(3, "Недопустимый идентификатор: '" + current + "'.\nКлючевые слова языка: Начало, Анализ, Синтез, Окончание. Переменные могут содержать только букву и до трех цифр после неё.", index, src.getIndex() + 1));
     }
 }
 

@@ -150,7 +150,7 @@ void MainWindow::on_actionShowASTAsGraph_triggered()
 
 void MainWindow::onError(Error e)
 {
-    console->setText(e.getMessage());
+    console->setText(QString::number(e.getErrorCode()) + ": " + e.getMessage());
 
     QTextCharFormat fmt;
     fmt.setBackground(Qt::red);

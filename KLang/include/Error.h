@@ -17,16 +17,18 @@
 class KLANG_LIBRARY_EXPORT Error : public QException
 {
 public:
-    explicit Error(const QString & message, int begin, int end);
+    explicit Error(int errorCode, const QString & message, int begin, int end);
 
     void raise() const;
     Error * clone() const;
 
+    int getErrorCode();
     const QString & getMessage() const;
     int getBegin() const;
     int getEnd() const;
 
 private:
+    int errorCode;
     QString message;
     int begin;
     int end;

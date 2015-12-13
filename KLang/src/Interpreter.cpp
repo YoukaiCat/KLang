@@ -43,7 +43,7 @@ void Interpreter::addVariable(const shared_ptr<Node> id)
 {
     auto name = id->getToken().getValue();
     if (variables->contains(name)) {
-        throw Error("Переменная с именем '" + name + "' уже объявлена", id->getToken().getIndexBegin(), id->getToken().getIndexEnd());
+        throw Error(200, "Переменная с именем '" + name + "' уже объявлена", id->getToken().getIndexBegin(), id->getToken().getIndexEnd());
     } else {
         variables->insert(name, DEFAULT_REAL_VAL);
     }
@@ -81,7 +81,7 @@ double Interpreter::expression(const shared_ptr<Node> node) const
     case Lexeme::Id:
         return variableValue(token);
     default:
-        throw Error("Неизвестный оператор", node->getToken().getIndexBegin(), node->getToken().getIndexEnd());
+        throw Error(201, "Неизвестный оператор", node->getToken().getIndexBegin(), node->getToken().getIndexEnd());
     }
 }
 
@@ -90,7 +90,7 @@ double Interpreter::op_division(const shared_ptr<Node> leftOperandNode, const sh
     double leftOperand = expression(leftOperandNode);
     double rightOperand = expression(rightOperandNode);
     if (rightOperand == 0.0) {
-        throw Error("Деление на ноль!", leftOperandNode->getToken().getIndexBegin(), rightOperandNode->getToken().getIndexEnd());
+        throw Error(202, "Деление на ноль!", leftOperandNode->getToken().getIndexBegin(), rightOperandNode->getToken().getIndexEnd());
     } else {
         return leftOperand / rightOperand;
     }
@@ -132,7 +132,7 @@ double Interpreter::variableValue(const Token & token) const
     if (variables->contains(token.getValue())) {
         return variables->value(token.getValue());
     } else {
-        throw Error("Переменная '" + token.getValue() + "' не определена", token.getIndexBegin(), token.getIndexEnd());
+        throw Error(203, "Переменная '" + token.getValue() + "' не определена", token.getIndexBegin(), token.getIndexEnd());
     }
 }
 
@@ -143,6 +143,6 @@ double Interpreter::getNumber(const Token & token) const
     if (ok) {
         return num;
     } else {
-        throw Error("'" + token.getValue() + "'Невозможно преобразовать в вещественное число.", token.getIndexBegin(), token.getIndexEnd());
+        throw Error(204, "'" + token.getValue() + "'Невозможно преобразовать в вещественное число.", token.getIndexBegin(), token.getIndexEnd());
     }
 }

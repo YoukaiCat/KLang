@@ -7,8 +7,9 @@
 
 #include "Error.h"
 
-Error::Error(const QString & message, int begin, int end)
-    : message(message)
+Error::Error(int errorCode, const QString & message, int begin, int end)
+    : errorCode(errorCode)
+    , message(message)
     , begin(begin)
     , end(end)
 {}
@@ -21,6 +22,11 @@ void Error::raise() const
 Error * Error::clone() const
 {
     return new Error(*this);
+}
+
+int Error::getErrorCode()
+{
+    return errorCode;
 }
 
 const QString & Error::getMessage() const
