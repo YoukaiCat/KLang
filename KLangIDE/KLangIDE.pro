@@ -5,7 +5,7 @@ TEMPLATE = app
 INCLUDEPATH += include
 
 SOURCES += \
-    main.cpp \
+    src/main.cpp \
     src/MainWindow.cpp \
     src/SyntaxHighlighter.cpp \
     src/ASTGraphDialog.cpp \
