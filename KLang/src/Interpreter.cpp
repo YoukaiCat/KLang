@@ -85,12 +85,15 @@ double Interpreter::expression(const shared_ptr<Node> node) const
     }
 }
 
+// TODO было бы правильнее подсвечивать знак деления и правый операнд
 double Interpreter::op_division(const shared_ptr<Node> leftOperandNode, const shared_ptr<Node> rightOperandNode) const
 {
     double leftOperand = expression(leftOperandNode);
     double rightOperand = expression(rightOperandNode);
     if (rightOperand == 0.0) {
-        throw Error(202, "Деление на ноль!", leftOperandNode->getToken().getIndexBegin(), rightOperandNode->getToken().getIndexEnd());
+        throw Error(202, "Деление на ноль!",
+                    leftOperandNode->getChildren().at(0)->getToken().getIndexBegin(),
+                    rightOperandNode->getChildren().at(1)->getToken().getIndexEnd());
     } else {
         return leftOperand / rightOperand;
     }

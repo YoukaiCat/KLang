@@ -189,20 +189,23 @@ shared_ptr<Node> Parser::notExpression()
     }
 }
 
+// TODO
+// а = ((5.0) 5.0)
+// 106: Не найдена закрывающая скобка
 shared_ptr<Node> Parser::base()
 {
     auto token = tokens->takeFirst();
     if (token.getType() == Lexeme::Num || token.getType() == Lexeme::Id) {
         return make_shared<Node>(Node(token));
     } else if (token.getType() == Lexeme::LeftParentheses) {
-        paranthesisIndices.push(token.getIndexBegin());
+        parenthesisIndices.push(token.getIndexBegin());
         auto node = additiveExpression();
         if (tokens->first().getType() == Lexeme::RightParentheses) {
             tokens->takeFirst();
-            paranthesisIndices.pop();
+            parenthesisIndices.pop();
             return node;
         } else {
-            throw Error(106, QString("Не найдена закрывающая скобка"), paranthesisIndices.pop(), token.getIndexEnd());
+            throw Error(106, QString("Не найдена закрывающая скобка"), parenthesisIndices.pop(), token.getIndexEnd());
         }
     } else {
         throw Error(107, QString("Ожидалось число, идентификатор или открывающая скобка, но ") + token.toString(), token.getIndexBegin(), token.getIndexEnd());

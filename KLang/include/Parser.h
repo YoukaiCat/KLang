@@ -45,7 +45,7 @@ private:
     QString tokenToString(const Token & token);
 
     shared_ptr<QList<Token>> tokens;
-    QStack<int> paranthesisIndices;
+    QStack<int> parenthesisIndices;
 };
 
 #endif // PARSER_H
