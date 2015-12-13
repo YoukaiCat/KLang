@@ -10,14 +10,12 @@
 
 #include "KLang_global.h"
 
-#include <QObject>
 #include <QStringList>
 
-class Source : public QObject
+class Source
 {
-    Q_OBJECT
 public:
-    explicit Source(const QString & source, QObject * parent = 0);
+    explicit Source(const QString & source);
     QString shift();
     QString first() const;
     bool isEmpty() const;

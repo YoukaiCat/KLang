@@ -10,6 +10,9 @@
 
 #include "KLang_global.h"
 
+#include <memory>
+
+#include <QObject>
 #include <QMap>
 
 #include "Lexeme.h"
@@ -17,13 +20,15 @@
 #include "Token.h"
 #include "Error.h"
 
+using std::shared_ptr;
+
 class KLANG_LIBRARY_EXPORT Lexer : public QObject
 {
     Q_OBJECT
 public:
     explicit Lexer(const QString & source, QObject * parent = 0);
     explicit Lexer(const QString & source, bool continueDespiteErrors, QObject * parent = 0);
-    QList<Token> tokenize();
+    shared_ptr<QList<Token>> tokenize();
 
 private:
     void processSource();
@@ -33,8 +38,8 @@ private:
 
     QMap<QString, Lexeme> symbols;
     QMap<QString, Lexeme> words;
-    QList<Token> tokens;
-    Source * src;
+    shared_ptr<QList<Token>> tokens;
+    Source src;
 
     bool continueDespiteErrors;
 };

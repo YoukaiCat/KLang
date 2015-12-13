@@ -9,24 +9,28 @@
 #include "Error.h"
 #include "Lexeme.h"
 
-Parser::Parser(const QList<Token> & tokens, QObject * parent)
+using std::make_shared;
+
+Parser::Parser(const shared_ptr<QList<Token>> tokens, QObject * parent)
     : QObject(parent)
     , tokens(tokens)
 {}
 
-Node Parser::parse()
+shared_ptr<Node> Parser::parse()
 {
     return begin();
 }
 
-Node Parser::begin()
+shared_ptr<Node> Parser::begin()
 {
-    auto token = tokens.takeFirst();
+    auto token = tokens->takeFirst();
     if (token.getType() == Lexeme::Begin) {
         auto declarationsNode = declarations();
         auto assignmentsNode = assignments();
         auto endNode = end();
-        return Node(token).addChild(declarationsNode).addChild(assignmentsNode).addChild(endNode);
+        auto node = make_shared<Node>(Node(token));
+        node->addChild(declarationsNode)->addChild(assignmentsNode)->addChild(endNode);
+        return node;
     } else {
         throw Error(QString("Ожидалось ключевое слово \"Начало\", но получено '") + token.getValue() + "'", token.getIndexBegin(), token.getIndexEnd());
     }
@@ -34,167 +38,187 @@ Node Parser::begin()
 
 // TODO Запилить switch по типам.
 // Чтобы выводилось "но получено (ключевое слово | переменная | символ | ...)"
-Node Parser::declarations()
+shared_ptr<Node> Parser::declarations()
 {
-    if (tokens.first().getType() == Lexeme::SingleDeclaration || tokens.first().getType() == Lexeme::MultipleDeclaration) {
-        QList<Node> declarations;
-        declarations.append(processDeclarations());
-        while (tokens.first().getType() == Lexeme::Semicolon && (tokens.at(1).getType() == Lexeme::SingleDeclaration || tokens.at(1).getType() == Lexeme::MultipleDeclaration)) {
-            tokens.takeFirst();
-            declarations.append(processDeclarations());
+    if (tokens->first().getType() == Lexeme::SingleDeclaration || tokens->first().getType() == Lexeme::MultipleDeclaration) {
+        auto declarations = make_shared<QList<shared_ptr<Node>>>(QList<shared_ptr<Node>>());
+        declarations->append(processDeclarations());
+        while (tokens->first().getType() == Lexeme::Semicolon && (tokens->at(1).getType() == Lexeme::SingleDeclaration || tokens->at(1).getType() == Lexeme::MultipleDeclaration)) {
+            tokens->takeFirst();
+            declarations->append(processDeclarations());
         }
-        return Node(Token(Lexeme::Declarations, "", 0, 0)).addChildren(declarations);
+        auto node = make_shared<Node>(Node(Token(Lexeme::Declarations, "", 0, 0)));
+        node->addChildren(declarations);
+        return node;
     } else {
-        throw Error(QString("Ожидалось ключевое слово \"Анализ\" или слово \"Синтез\", но получено '") + tokens.first().getValue() + "'", tokens.first().getIndexBegin(), tokens.first().getIndexEnd());
+        throw Error(QString("Ожидалось ключевое слово \"Анализ\" или слово \"Синтез\", но получено '") + tokens->first().getValue() + "'", tokens->first().getIndexBegin(), tokens->first().getIndexEnd());
     }
 }
 
-Node Parser::processDeclarations()
+shared_ptr<Node> Parser::processDeclarations()
 {
-    auto token = tokens.takeFirst();
+    auto token = tokens->takeFirst();
     if (token.getType() == Lexeme::SingleDeclaration) {
-        return Node(token).addChild(declareId());
+        auto node = make_shared<Node>(Node(token));
+        node->addChild(declareId());
+        return node;
     } else if (token.getType() == Lexeme::MultipleDeclaration) {
-        return Node(token).addChildren(declareIds());
+        auto node = make_shared<Node>(Node(token));
+        node->addChildren(declareIds());
+        return node;
     } else {
         throw Error(QString("Ожидалось ключевое слово \"Анализ\" или слово \"Синтез\", но получено '") + token.getValue() + "'", token.getIndexBegin(), token.getIndexEnd());
     }
 }
 
-Node Parser::declareId()
+shared_ptr<Node> Parser::declareId()
 {
-    auto token = tokens.takeFirst();
+    auto token = tokens->takeFirst();
     if (token.getType() == Lexeme::Id) {
-        return Node(token);
+        return make_shared<Node>(Node(token));
     } else {
         throw Error(QString("После слова \"Анализ\" ожидался идентификатор, но получено '") + token.getValue() + "'", token.getIndexBegin(), token.getIndexEnd());
     }
 }
 
-QList<Node> Parser::declareIds()
+shared_ptr<QList<shared_ptr<Node>>> Parser::declareIds()
 {
-    if (tokens.first().getType() == Lexeme::Id) {
-        QList<Node> ids;
-        ids.append(Node(tokens.takeFirst()));
-        while (tokens.first().getType() == Lexeme::Comma && tokens.at(1).getType() == Lexeme::Id) {
-            tokens.takeFirst();
-            ids.append(Node(tokens.takeFirst()));
+    if (tokens->first().getType() == Lexeme::Id) {
+        auto ids = make_shared<QList<shared_ptr<Node>>>(QList<shared_ptr<Node>>());
+        ids->append(make_shared<Node>(Node(tokens->takeFirst())));
+        while (tokens->first().getType() == Lexeme::Comma && tokens->at(1).getType() == Lexeme::Id) {
+            tokens->takeFirst();
+            ids->append(make_shared<Node>(Node(tokens->takeFirst())));
         }
         return ids;
     } else {
-        throw Error(QString("Ожидался идентификатор после слова \"Синтез\", но получено '") + tokens.first().getValue() + "'", tokens.first().getIndexBegin(), tokens.first().getIndexEnd());
+        throw Error(QString("Ожидался идентификатор после слова \"Синтез\", но получено '") + tokens->first().getValue() + "'", tokens->first().getIndexBegin(), tokens->first().getIndexEnd());
     }
 }
 
-Node Parser::assignments()
+shared_ptr<Node> Parser::assignments()
 {
-    if (tokens.first().getType() == Lexeme::Id && tokens.at(1).getType() == Lexeme::Equality) {
-        QList<Node> as;
-        as.append(createAssignment());
-        while (tokens.first().getType() == Lexeme::Id && tokens.at(1).getType() == Lexeme::Equality) {
-            as.append(createAssignment());
+    if (tokens->first().getType() == Lexeme::Id && tokens->at(1).getType() == Lexeme::Equality) {
+        auto as = make_shared<QList<shared_ptr<Node>>>(QList<shared_ptr<Node>>());
+        as->append(createAssignment());
+        while (tokens->first().getType() == Lexeme::Id && tokens->at(1).getType() == Lexeme::Equality) {
+            as->append(createAssignment());
         }
-        return Node(Token(Lexeme::Assignments, "", 0, 0)).addChildren(as);
+        auto node = make_shared<Node>(Node(Token(Lexeme::Assignments, "", 0, 0)));
+        node->addChildren(as);
+        return node;
     } else {
-        throw Error(QString("После объявления переменных ожидались присваивания, но получено '") + tokens.first().getValue() + "'", tokens.first().getIndexBegin(), tokens.first().getIndexEnd());
+        throw Error(QString("После объявления переменных ожидались присваивания, но получено '") + tokens->first().getValue() + "'", tokens->first().getIndexBegin(), tokens->first().getIndexEnd());
     }
 }
 
-Node Parser::createAssignment()
+shared_ptr<Node> Parser::createAssignment()
 {
-    auto idToken = tokens.takeFirst();
-    auto eqToken = tokens.takeFirst();
-    return Node(eqToken).addChild(Node(idToken)).addChild(additiveExpression());
+    auto idToken = tokens->takeFirst();
+    auto eqToken = tokens->takeFirst();
+    auto node = make_shared<Node>(Node(eqToken));
+    node->addChild(make_shared<Node>(Node(idToken)))->addChild(additiveExpression());
+    return node;
 }
 
 // Classic recursive-descent parser for expressions
 // Inefficient, boilerplate and hardcoded,
 // but close to grammar rules and easy to understand
-Node Parser::additiveExpression()
+shared_ptr<Node> Parser::additiveExpression()
 {
     //Выражение более высокого приоретета либо его отрицание
-    Node node;
-    if (tokens.first().getType() == Lexeme::Minus) {
+    shared_ptr<Node> node;
+    if (tokens->first().getType() == Lexeme::Minus) {
         //Eсли унарный минус есть, создаётся нода с отрицанием выражения высшего приоретета
         node = unaryMinus();
     } else {
         //Иначе возвращается нода выражения высшего приоретета
         node = multiplicativeExpression();
     }
-    while (tokens.first().getType() == Lexeme::Plus || tokens.first().getType() == Lexeme::Minus) {
-        auto sign = tokens.takeFirst();
-        node = Node(sign).addChild(node).addChild(multiplicativeExpression());
+    while (tokens->first().getType() == Lexeme::Plus || tokens->first().getType() == Lexeme::Minus) {
+        auto sign = tokens->takeFirst();
+        auto signNode = make_shared<Node>(Node(sign));
+        signNode->addChild(node)->addChild(multiplicativeExpression());
+        node = signNode;
     }
     return node;
 }
 
-Node Parser::unaryMinus()
+shared_ptr<Node> Parser::unaryMinus()
 {
     //Унарный минус по BNF должен одинаковый приоретет с + - и ниже * /
     //Однако, может стоять только в левой части выражения, тем самым, всегда в приоретете над + -
-    auto token = tokens.takeFirst();
+    auto token = tokens->takeFirst();
     auto unaryMinus = Token(Lexeme::UnaryMinus, token.getValue(), token.getIndexBegin(), token.getIndexEnd());
-    return Node(unaryMinus).addChild(multiplicativeExpression());
+    auto node = make_shared<Node>(Node(unaryMinus));
+    node->addChild(multiplicativeExpression());
+    return node;
 }
 
-Node Parser::multiplicativeExpression()
+shared_ptr<Node> Parser::multiplicativeExpression()
 {
     auto node = booleanBinaryExpression();
-    while (tokens.first().getType() == Lexeme::Multiply || tokens.first().getType() == Lexeme::Divide) {
-        auto sign = tokens.takeFirst();
-        node = Node(sign).addChild(node).addChild(booleanBinaryExpression());
+    while (tokens->first().getType() == Lexeme::Multiply || tokens->first().getType() == Lexeme::Divide) {
+        auto sign = tokens->takeFirst();
+        auto signNode = make_shared<Node>(Node(sign));
+        signNode->addChild(node)->addChild(booleanBinaryExpression());
+        node = signNode;
     }
     return node;
 }
 
-Node Parser::booleanBinaryExpression()
+shared_ptr<Node> Parser::booleanBinaryExpression()
 {
     auto node = notExpression();
-    while (tokens.first().getType() == Lexeme::And || tokens.first().getType() == Lexeme::Or) {
-        auto sign = tokens.takeFirst();
-        node = Node(sign).addChild(node).addChild(notExpression());
+    while (tokens->first().getType() == Lexeme::And || tokens->first().getType() == Lexeme::Or) {
+        auto sign = tokens->takeFirst();
+        auto signNode = make_shared<Node>(Node(sign));
+        signNode->addChild(node)->addChild(notExpression());
+        node = signNode;
     }
     return node;
 }
 
-Node Parser::notExpression()
+shared_ptr<Node> Parser::notExpression()
 {
-    if (tokens.first().getType() == Lexeme::Not) {
-        auto sign = tokens.takeFirst();
-        return Node(sign).addChild(base());
+    if (tokens->first().getType() == Lexeme::Not) {
+        auto sign = tokens->takeFirst();
+        auto signNode = make_shared<Node>(Node(sign));
+        signNode->addChild(base());
+        return signNode;
     } else {
         return base();
     }
 }
 
-Node Parser::base()
+shared_ptr<Node> Parser::base()
 {
-    auto token = tokens.takeFirst();
+    auto token = tokens->takeFirst();
     if (token.getType() == Lexeme::Num || token.getType() == Lexeme::Id) {
-        return Node(token);
+        return make_shared<Node>(Node(token));
     } else if (token.getType() == Lexeme::LeftParentheses) {
         paranthesisIndices.push(token.getIndexBegin());
         auto node = additiveExpression();
-        if (tokens.first().getType() == Lexeme::RightParentheses) {
-            tokens.takeFirst();
+        if (tokens->first().getType() == Lexeme::RightParentheses) {
+            tokens->takeFirst();
             paranthesisIndices.pop();
             return node;
         } else {
-            throw Error(QString("Не найдена закрывающая скобка."), paranthesisIndices.pop(), tokens.first().getIndexEnd());
+            throw Error(QString("Не найдена закрывающая скобка."), paranthesisIndices.pop(), tokens->first().getIndexEnd());
         }
     } else {
         throw Error(QString("Ожидалось число, идентификатор или открывающая скобка, но получено '") + token.getValue() + "'", token.getIndexBegin(), token.getIndexEnd());
     }
 }
 
-Node Parser::end()
+shared_ptr<Node> Parser::end()
 {
-    auto token = tokens.takeFirst();
+    auto token = tokens->takeFirst();
     if (token.getType() == Lexeme::End) {
-        if (tokens.first().getType() == Lexeme::Eof) {
-            return Node(token);
+        if (tokens->first().getType() == Lexeme::Eof) {
+            return make_shared<Node>(Node(token));
         } else {
-            throw Error(QString("После ключевого слова \"Окончание\" не должны находиться ключевые слова, идентификаторы и знаки операций. Получено '") + tokens.first().getValue() + "'", tokens.first().getIndexBegin(), tokens.first().getIndexEnd());
+            throw Error(QString("После ключевого слова \"Окончание\" не должны находиться ключевые слова, идентификаторы и знаки операций. Получено '") + tokens->first().getValue() + "'", tokens->first().getIndexBegin(), tokens->first().getIndexEnd());
         }
     } else {
         throw Error(QString("Ожидалось ключевое слово \"Окончание\", но получено '") + token.getValue() + "'", token.getIndexBegin(), token.getIndexEnd());

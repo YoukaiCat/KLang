@@ -118,7 +118,7 @@ void MainWindow::run()
     auto ast = parser->parse();
     interpreter = new Interpreter(ast);
 
-    qDebug(ast.inspect().toStdString().c_str());
+    qDebug(ast->inspect().toStdString().c_str());
 
     astGraph = QPixmap::fromImage(ASTGraphVisualizer::renderASTAsGraph(ast));
 
@@ -166,10 +166,10 @@ void MainWindow::onError(Error e)
     cleared = false;
 }
 
-void MainWindow::printResult(QMap<QString, double> map)
+void MainWindow::printResult(const shared_ptr<QMap<QString, double>> map) const
 {
     console->setText("");
-    QMapIterator<QString, double> i(map);
+    QMapIterator<QString, double> i(*map);
     while (i.hasNext()) {
         i.next();
         //Если число круглое, то #number не будет выводить точку и хотябы один ноль.

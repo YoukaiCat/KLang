@@ -8,88 +8,89 @@
 #include "Interpreter.h"
 #include "Error.h"
 
-Interpreter::Interpreter(const Node & ast, QObject * parent)
+Interpreter::Interpreter(const shared_ptr<Node> ast, QObject * parent)
     : QObject(parent)
     , ast(ast)
+    , variables(std::make_shared<QMap<QString, double>>(QMap<QString, double>()))
 {}
 
-QMap<QString, double> Interpreter::evaluate()
+shared_ptr<QMap<QString, double>> Interpreter::evaluate()
 {
-    declarations(ast.at(0));
-    assignments(ast.at(1));
+    declarations(ast->at(0));
+    assignments(ast->at(1));
     return variables;
 }
 
-QMap<QString, double> Interpreter::getVariables() const
+shared_ptr<QMap<QString, double>> Interpreter::getVariables() const
 {
     return variables;
 }
 
-void Interpreter::declarations(const Node & declarationsNode)
+void Interpreter::declarations(const shared_ptr<Node> declarationsNode)
 {
-    for (Node declaration : declarationsNode.getChildren()) {
-        if (declaration.getToken().getType() == Lexeme::SingleDeclaration) {
-            addVariable(declaration.at(0));
-        } else if (declaration.getToken().getType() == Lexeme::MultipleDeclaration) {
-            for (Node id : declaration.getChildren()) {
+    for (auto declaration : *declarationsNode->getChildren()) {
+        if (declaration->getToken().getType() == Lexeme::SingleDeclaration) {
+            addVariable(declaration->at(0));
+        } else if (declaration->getToken().getType() == Lexeme::MultipleDeclaration) {
+            for (auto id : *declaration->getChildren()) {
                 addVariable(id);
             }
         }
     }
 }
 
-void Interpreter::addVariable(const Node & id)
+void Interpreter::addVariable(const shared_ptr<Node> id)
 {
-    auto name = id.getToken().getValue();
-    if (variables.contains(name)) {
-        throw Error("Переменная с именем '" + name + "' уже объявлена", id.getToken().getIndexBegin(), id.getToken().getIndexEnd());
+    auto name = id->getToken().getValue();
+    if (variables->contains(name)) {
+        throw Error("Переменная с именем '" + name + "' уже объявлена", id->getToken().getIndexBegin(), id->getToken().getIndexEnd());
     } else {
-        variables[name] = DEFAULT_REAL_VAL;
+        variables->insert(name, DEFAULT_REAL_VAL);
     }
 }
 
-void Interpreter::assignments(const Node & assignmentsNode)
+void Interpreter::assignments(const shared_ptr<Node> assignmentsNode)
 {
-    for (Node assignment : assignmentsNode.getChildren()) {
-        variables[assignment.at(0).getToken().getValue()] = expression(assignment.at(1));
+    for (auto assignment : *assignmentsNode->getChildren()) {
+        (*variables)[assignment->at(0)->getToken().getValue()] = expression(assignment->at(1));
     }
 }
 
-double Interpreter::expression(const Node & node) const
+double Interpreter::expression(const shared_ptr<Node> node) const
 {
-    auto token = node.getToken();
+    auto token = node->getToken();
     switch (token.getType()) {
     case Lexeme::UnaryMinus:
-        return - expression(node.at(0));
+        return - expression(node->at(0));
     case Lexeme::Plus:
-        return expression(node.at(0)) + expression(node.at(1));
+        return expression(node->at(0)) + expression(node->at(1));
     case Lexeme::Minus:
-        return expression(node.at(0)) - expression(node.at(1));
+        return expression(node->at(0)) - expression(node->at(1));
     case Lexeme::Multiply:
-        return expression(node.at(0)) * expression(node.at(1));
+        return expression(node->at(0)) * expression(node->at(1));
     case Lexeme::Divide:
-        return op_division(node.at(0), node.at(1));
+        return op_division(node->at(0), node->at(1));
     case Lexeme::And:
-        return op_and(expression(node.at(0)), expression(node.at(1)));
+        return op_and(expression(node->at(0)), expression(node->at(1)));
     case Lexeme::Or:
-        return op_or(expression(node.at(0)), expression(node.at(1)));
+        return op_or(expression(node->at(0)), expression(node->at(1)));
     case Lexeme::Not:
-        return op_not(expression(node.at(0)));
+        return op_not(expression(node->at(0)));
     case Lexeme::Num:
         return getNumber(token);
     case Lexeme::Id:
         return variableValue(token);
     default:
-        throw Error("Неизвестный оператор", node.getToken().getIndexBegin(), node.getToken().getIndexEnd());
+        throw Error("Неизвестный оператор", node->getToken().getIndexBegin(), node->getToken().getIndexEnd());
     }
 }
 
-double Interpreter::op_division(const Node & leftOperandNode, const Node & rightOperandNode) const
+double Interpreter::op_division(const shared_ptr<Node> leftOperandNode, const shared_ptr<Node> rightOperandNode) const
 {
     double leftOperand = expression(leftOperandNode);
     double rightOperand = expression(rightOperandNode);
     if (rightOperand == 0.0) {
-        throw Error("Деление на ноль!", leftOperandNode.getToken().getIndexBegin(), rightOperandNode.getToken().getIndexEnd());
+        throw Error("Деление на ноль!", leftOperandNode->getToken().getIndexBegin(), rightOperandNode->getToken().getIndexEnd());
     } else {
         return leftOperand / rightOperand;
     }
@@ -128,8 +129,8 @@ double Interpreter::op_not(double operand) const
 
 double Interpreter::variableValue(const Token & token) const
 {
-    if (variables.contains(token.getValue())) {
-        return variables[token.getValue()];
+    if (variables->contains(token.getValue())) {
+        return variables->value(token.getValue());
     } else {
         throw Error("Переменная '" + token.getValue() + "' не определена", token.getIndexBegin(), token.getIndexEnd());
     }

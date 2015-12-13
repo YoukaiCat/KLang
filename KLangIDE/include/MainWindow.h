@@ -56,7 +56,7 @@ public slots:
 
 private:
     void run();
-    void printResult(QMap<QString, double> map);
+    void printResult(const shared_ptr<QMap<QString, double>> map) const;
     void clearErrorHighlighting();
 
     Ui::MainWindow * ui;

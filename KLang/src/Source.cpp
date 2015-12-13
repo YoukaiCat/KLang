@@ -7,8 +7,7 @@
 
 #include "Source.h"
 
-Source::Source(const QString & source, QObject * parent)
-    : QObject(parent)
+Source::Source(const QString & source)
 {
     chars = source.split("");
     index = -2; //Магическое число, подобраное опытным путём

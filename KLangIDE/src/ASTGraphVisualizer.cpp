@@ -3,7 +3,7 @@
 #include <QUuid>
 #include <QByteArray>
 
-QImage ASTGraphVisualizer::renderASTAsGraph(const Node & astRoot)
+QImage ASTGraphVisualizer::renderASTAsGraph(const shared_ptr<Node> astRoot)
 {
     char ** image = (char **) malloc(1 * sizeof(char *));
     uint len = 0;
@@ -31,15 +31,15 @@ QImage ASTGraphVisualizer::renderASTAsGraph(const Node & astRoot)
     return QImage::fromData((uchar *)*image, len, "png");
 }
 
-void ASTGraphVisualizer::nextNode(const Node & astNode, Agraph_t * graph, Agnode_t * parent)
+void ASTGraphVisualizer::nextNode(const shared_ptr<Node> astNode, Agraph_t * graph, Agnode_t * parent)
 {
     Agnode_t * node = agnode(graph, QUuid::createUuid().toString().toLatin1().data(), 1);
-    agset(node, (char *)"label", astNode.getToken().inspect().toLocal8Bit().data());
+    agset(node, (char *)"label", astNode->getToken().inspect().toLocal8Bit().data());
     agsafeset(node, (char *)"shape", (char *)"box", (char *)"");
     agsafeset(node, (char *)"fontsize", (char *)"10", (char *)"");
     agsafeset(node, (char *)"margin", (char *)"0.3,0.005", (char *)"");
     agedge(graph, parent, node, 0, 1);
-    for (auto child : astNode.getChildren()) {
+    for (auto child : *astNode->getChildren()) {
         nextNode(child, graph, node);
     }
 }

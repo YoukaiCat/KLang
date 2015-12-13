@@ -11,7 +11,8 @@
 
 Lexer::Lexer(const QString & source, QObject * parent)
     : QObject(parent)
-    , src(new Source(source, this))
+    , src(Source(source))
+    , tokens(std::make_shared<QList<Token>>(QList<Token>()))
     , continueDespiteErrors(false)
 {
     symbols["("] = Lexeme::LeftParentheses;
@@ -39,56 +40,56 @@ Lexer::Lexer(const QString & source, bool continueDespiteErrors, QObject * paren
     this->continueDespiteErrors = continueDespiteErrors;
 }
 
-QList<Token> Lexer::tokenize()
+shared_ptr<QList<Token>> Lexer::tokenize()
 {
     processSource();
-    tokens.append(Token(Lexeme::Eof, "Конец ввода", src->getIndex(), src->getIndex()));
+    tokens->append(Token(Lexeme::Eof, "Конец ввода", src.getIndex(), src.getIndex()));
     return tokens;
 }
 
 void Lexer::processSource()
 {
-    while (!src->isEmpty()) {
-        auto current = src->shift();
+    while (!src.isEmpty()) {
+        auto current = src.shift();
         if (current.contains(QRegularExpression("^(\\s|\\n)?$"))) {
             //Пробелы, переводы строк и пустые строки пропускаются
         } else if (symbols.contains(current)) {
-            tokens.append(Token(symbols[current], current, src->getIndex(), src->getIndex() + 1));
+            tokens->append(Token(symbols[current], current, src.getIndex(), src.getIndex() + 1));
         } else if (current.contains(QRegularExpression("^\\d$"))) {
             processDigits(current);
         } else if (current.contains(QRegularExpression("^[А-Яа-я]$"))) {
             processWords(current);
         } else {
-            reportError(Error("Неизвестный символ: '" + current + "'.\nДопустимы только буквы русского алфавита, вещественные числа и знаки операций.", src->getIndex(), src->getIndex() + 1));
+            reportError(Error("Неизвестный символ: '" + current + "'.\nДопустимы только буквы русского алфавита, вещественные числа и знаки операций.", src.getIndex(), src.getIndex() + 1));
         }
     }
 }
 
 void Lexer::processDigits(QString & current)
 {
-    auto index = src->getIndex();
-    while (src->first().contains(QRegularExpression("^(\\d|\\.)$"))) {
-        current += src->shift();
+    auto index = src.getIndex();
+    while (src.first().contains(QRegularExpression("^(\\d|\\.)$"))) {
+        current += src.shift();
     }
     if (current.contains(QRegularExpression("^\\d+\\.\\d+$"))) {
-        tokens.append(Token(Lexeme::Num, current, index, src->getIndex() + 1));
+        tokens->append(Token(Lexeme::Num, current, index, src.getIndex() + 1));
     } else {
-        reportError(Error("Допустимы только вещественные числа.", index, src->getIndex() + 1));
+        reportError(Error("Допустимы только вещественные числа.", index, src.getIndex() + 1));
     }
 }
 
 void Lexer::processWords(QString & current)
 {
-    auto index = src->getIndex();
-    while (src->first().contains(QRegularExpression("^([А-Яа-я]|\\d)$"))) {
-        current += src->shift();
+    auto index = src.getIndex();
+    while (src.first().contains(QRegularExpression("^([А-Яа-я]|\\d)$"))) {
+        current += src.shift();
     }
     if (words.contains(current)) {
-        tokens.append(Token(words[current], current, index, src->getIndex() + 1));
+        tokens->append(Token(words[current], current, index, src.getIndex() + 1));
     } else if (current.contains(QRegularExpression("^[А-Яа-я]\\d{0,3}$"))) {
-        tokens.append(Token(Lexeme::Id, current, index, src->getIndex() + 1));
+        tokens->append(Token(Lexeme::Id, current, index, src.getIndex() + 1));
     } else {
-        reportError(Error("Недопустимый идентификатор: '" + current + "'.\nКлючевые слова языка: Начало, Анализ, Синтез, Окончание. Переменные могут содержать только букву и до трех цифр после неё.", index, src->getIndex() + 1));
+        reportError(Error("Недопустимый идентификатор: '" + current + "'.\nКлючевые слова языка: Начало, Анализ, Синтез, Окончание. Переменные могут содержать только букву и до трех цифр после неё.", index, src.getIndex() + 1));
     }
 }
 

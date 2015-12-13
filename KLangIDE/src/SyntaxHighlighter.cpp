@@ -17,7 +17,7 @@ SyntaxHighlighter::SyntaxHighlighter(QTextDocument * parent)
 void SyntaxHighlighter::highlightBlock(const QString & text)
 {
     Lexer l(text, true);
-    for (auto token : l.tokenize()) {
+    for (auto token : *l.tokenize()) {
         auto length = token.getIndexEnd() - token.getIndexBegin();
         auto format = getFormatForLexemeType(token.getType());
         setFormat(token.getIndexBegin(), length, format);

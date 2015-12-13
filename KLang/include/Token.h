@@ -12,7 +12,7 @@
 
 #include "Lexeme.h"
 
-class KLANG_LIBRARY_EXPORT Token// : public QObject
+class KLANG_LIBRARY_EXPORT Token
 {
 public:
     Token(const Lexeme & type, const QString & value, int indexBegin, int indexEnd);

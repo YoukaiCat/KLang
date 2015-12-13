@@ -10,9 +10,9 @@
 class ASTGraphVisualizer
 {
 public:
-    static QImage renderASTAsGraph(const Node & ast);
+    static QImage renderASTAsGraph(const shared_ptr<Node> ast);
 private:
-    static void nextNode(const Node & astNode, Agraph_t * graph, Agnode_t * parent);
+    static void nextNode(const shared_ptr<Node> astNode, Agraph_t * graph, Agnode_t * parent);
 };
 
 #endif // ASTASGRAPHVISUALIZER_H

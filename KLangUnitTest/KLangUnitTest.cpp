@@ -17,9 +17,9 @@ private slots:
             Окончание
         )doc";
         auto result = interpret(source);
-        QCOMPARE(result["а"], 3.0);
-        QCOMPARE(result["б"], 0.0);
-        QCOMPARE(result["б1"], 0.0);
+        QCOMPARE(result->value("а"), 3.0);
+        QCOMPARE(result->value("б"), 0.0);
+        QCOMPARE(result->value("б1"), 0.0);
     }
     void example2() {
         auto source = R"doc(
@@ -31,9 +31,9 @@ private slots:
             Окончание
         )doc";
         auto result = interpret(source);
-        QCOMPARE(result["а"], 3.0);
-        QCOMPARE(result["б"], 12.0);
-        QCOMPARE(result["б1"], 0.0);
+        QCOMPARE(result->value("а"), 3.0);
+        QCOMPARE(result->value("б"), 12.0);
+        QCOMPARE(result->value("б1"), 0.0);
     }
     void example3() {
         auto source = R"doc(
@@ -45,9 +45,9 @@ private slots:
             Окончание
         )doc";
         auto result = interpret(source);
-        QCOMPARE(result["а112"], 0.0);
-        QCOMPARE(result["б911"], 0.0);
-        QCOMPARE(result["в"], 1.0);
+        QCOMPARE(result->value("а112"), 0.0);
+        QCOMPARE(result->value("б911"), 0.0);
+        QCOMPARE(result->value("в"), 1.0);
     }
     void example4() {
         auto source = R"doc(
@@ -58,12 +58,12 @@ private slots:
             Окончание
         )doc";
         auto result = interpret(source);
-        QCOMPARE(result["а"], 0.0);
-        QCOMPARE(result["б"], 0.0);
-        QCOMPARE(result["в"], 0.0);
-        QCOMPARE(result["а1"], 2.0);
-        QCOMPARE(result["б1"], 0.0);
-        QCOMPARE(result["в1"], 0.0);
+        QCOMPARE(result->value("а"), 0.0);
+        QCOMPARE(result->value("б"), 0.0);
+        QCOMPARE(result->value("в"), 0.0);
+        QCOMPARE(result->value("а1"), 2.0);
+        QCOMPARE(result->value("б1"), 0.0);
+        QCOMPARE(result->value("в1"), 0.0);
     }
     void example5() {
         auto source = R"doc(
@@ -73,7 +73,7 @@ private slots:
             Окончание
         )doc";
         auto result = interpret(source);
-        QCOMPARE(result["П1"], 0.0);
+        QCOMPARE(result->value("П1"), 0.0);
     }
     void example6() {
         auto source = R"doc(
@@ -91,12 +91,12 @@ private slots:
             Окончание
         )doc";
         auto result = interpret(source);
-        QCOMPARE(result["а"], 10.0);
-        QCOMPARE(result["б"], 4.0);
-        QCOMPARE(result["в"], 13.0);
-        QCOMPARE(result["а1"], 6.0);
-        QCOMPARE(result["б1"], 6.0);
-        QCOMPARE(result["в1"], 5.5);
+        QCOMPARE(result->value("а"), 10.0);
+        QCOMPARE(result->value("б"), 4.0);
+        QCOMPARE(result->value("в"), 13.0);
+        QCOMPARE(result->value("а1"), 6.0);
+        QCOMPARE(result->value("б1"), 6.0);
+        QCOMPARE(result->value("в1"), 5.5);
     }
     void example7() {
         auto source = R"doc(
@@ -108,9 +108,9 @@ private slots:
             Окончание
         )doc";
         auto result = interpret(source);
-        QCOMPARE(result["а"], 8.0);
-        QCOMPARE(result["б"], 8.0);
-        QCOMPARE(result["в"], 15.0);
+        QCOMPARE(result->value("а"), 8.0);
+        QCOMPARE(result->value("б"), 8.0);
+        QCOMPARE(result->value("в"), 15.0);
     }
 // Precedence works
 // - 5.0 - (- 1.0 - 1.0) + (- 2.0) => - ((5.0 - (- (1.0 - 1.0))) + (- 2.0))
@@ -127,10 +127,10 @@ private slots:
 //            Окончание
 //        )doc";
 //        auto result = interpret(source);
-//        QCOMPARE(result["а"], -3.0);
-//        QCOMPARE(result["б"], 10.0);
-//        QCOMPARE(result["в"], 0.0);
-//        QCOMPARE(result["г"], 11.0);
+//        QCOMPARE(result->value("а"), -3.0);
+//        QCOMPARE(result->value("б"), 10.0);
+//        QCOMPARE(result->value("в"), 0.0);
+//        QCOMPARE(result->value("г"), 11.0);
 //    }
     void example9() {
         auto source = R"doc(
@@ -142,12 +142,12 @@ private slots:
             Окончание
         )doc";
         auto result = interpret(source);
-        QCOMPARE(result["а"], 0.0);
-        QCOMPARE(result["б"], 0.0);
-        QCOMPARE(result["в"], 0.0);
+        QCOMPARE(result->value("а"), 0.0);
+        QCOMPARE(result->value("б"), 0.0);
+        QCOMPARE(result->value("в"), 0.0);
     }
 private:
-    QMap<QString, double> interpret(const QString & source) {
+    shared_ptr<QMap<QString, double>> interpret(const QString & source) {
         auto lexer = new Lexer(source);
         auto parser = new Parser(lexer->tokenize());
         auto interpreter = new Interpreter(parser->parse());

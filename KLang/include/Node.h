@@ -10,9 +10,13 @@
 
 #include "KLang_global.h"
 
+#include <memory>
+
 #include <QList>
 
 #include "Token.h"
+
+using std::shared_ptr;
 
 class KLANG_LIBRARY_EXPORT Node
 {
@@ -20,18 +24,18 @@ public:
     Node();
     Node(const Token & token);
 
-    Node & addChild(const Node & node);
-    Node & addChildren(const QList<Node> & nodes);
+    Node * addChild(const shared_ptr<Node> node);
+    Node * addChildren(const shared_ptr<QList<shared_ptr<Node>>> nodes);
 
-    const Node & at(int index) const;
+    const shared_ptr<Node> at(int index) const;
     const Token & getToken() const;
-    const QList<Node> & getChildren() const;
+    const shared_ptr<QList<shared_ptr<Node>>> getChildren() const;
 
     QString inspect(int level = 1) const;
 
 private:
     Token token;
-    QList<Node> children;
+    shared_ptr<QList<shared_ptr<Node>>> children;
 };
 
 #endif // NODE_H
