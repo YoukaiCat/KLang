@@ -25,13 +25,13 @@ Lexer::Lexer(const QString & source, QObject * parent)
     symbols["*"] = Lexeme::Multiply;
     symbols["/"] = Lexeme::Divide;
 
-    words["Начало"] = Lexeme::Begin;
-    words["Окончание"] = Lexeme::End;
-    words["Анализ"] = Lexeme::SingleDeclaration;
-    words["Синтез"] = Lexeme::MultipleDeclaration;
-    words["И"] = Lexeme::And;
-    words["ИЛИ"] = Lexeme::Or;
-    words["НЕ"] = Lexeme::Not;
+    words["начало"] = Lexeme::Begin;
+    words["окончание"] = Lexeme::End;
+    words["анализ"] = Lexeme::SingleDeclaration;
+    words["синтез"] = Lexeme::MultipleDeclaration;
+    words["и"] = Lexeme::And;
+    words["или"] = Lexeme::Or;
+    words["не"] = Lexeme::Not;
 }
 
 Lexer::Lexer(const QString & source, bool continueDespiteErrors, QObject * parent)
@@ -84,8 +84,8 @@ void Lexer::processWords(QString & current)
     while (src.first().contains(QRegularExpression("^([А-Яа-я]|\\d)$"))) {
         current += src.shift();
     }
-    if (words.contains(current)) {
-        tokens->append(Token(words[current], current, index, src.getIndex() + 1));
+    if (words.contains(current.toLower())) {
+        tokens->append(Token(words[current.toLower()], current, index, src.getIndex() + 1));
     } else if (current.contains(QRegularExpression("^[А-Яа-я]\\d{0,3}$"))) {
         tokens->append(Token(Lexeme::Id, current, index, src.getIndex() + 1));
     } else {
