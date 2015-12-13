@@ -146,6 +146,40 @@ private slots:
         QCOMPARE(result->value("б"), 0.0);
         QCOMPARE(result->value("в"), 0.0);
     }
+    // AND
+    void example10() {
+        auto source = R"doc(
+            Начало
+            Синтез а, б, в, г
+            а = 1.0 И 1.0
+            б = 1.0 И 0.0
+            в = 0.0 И 1.0
+            г = 0.0 И 0.0
+            Окончание
+        )doc";
+        auto result = interpret(source);
+        QCOMPARE(result->value("а"), 1.0);
+        QCOMPARE(result->value("б"), 0.0);
+        QCOMPARE(result->value("в"), 0.0);
+        QCOMPARE(result->value("г"), 0.0);
+    }
+    // OR
+    void example11() {
+        auto source = R"doc(
+            Начало
+            Синтез а, б, в, г
+            а = 1.0 ИЛИ 1.0
+            б = 1.0 ИЛИ 0.0
+            в = 0.0 ИЛИ 1.0
+            г = 0.0 ИЛИ 0.0
+            Окончание
+        )doc";
+        auto result = interpret(source);
+        QCOMPARE(result->value("а"), 1.0);
+        QCOMPARE(result->value("б"), 1.0);
+        QCOMPARE(result->value("в"), 1.0);
+        QCOMPARE(result->value("г"), 0.0);
+    }
 private:
     shared_ptr<QMap<QString, double>> interpret(const QString & source) {
         auto lexer = new Lexer(source);

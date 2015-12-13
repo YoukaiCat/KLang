@@ -96,21 +96,23 @@ double Interpreter::op_division(const shared_ptr<Node> leftOperandNode, const sh
     }
 }
 
-// Логика операторов "как в си".
-// Оба оператора ленивые.
+// Логика операторов "как в си"
+// x == 0.0 => false
+// x != 0.0 => true
+// Операторы возвращают 1.0, когда вычисляются в true
 double Interpreter::op_and(double leftOperand, double rightOperand) const
 {
-    // Если какой либо из операндов равен нулю
-    if (leftOperand == 0.0 || rightOperand == 0.0) {
-        return 0.0; // false
-    } else {
+    // Если оба операнда не равны нулю
+    if (leftOperand != 0.0 && rightOperand != 0.0) {
         return 1.0; // true
+    } else {
+        return 0.0; // false
     }
 }
 
 double Interpreter::op_or(double leftOperand, double rightOperand) const
 {
-    // Если какой либо из операндов не равен нулю
+    // Если какой-либо из операндов не равен нулю
     if (leftOperand != 0.0 || rightOperand != 0.0) {
         return 1.0; // true
     } else {
