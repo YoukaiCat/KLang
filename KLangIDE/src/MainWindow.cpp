@@ -25,7 +25,19 @@ MainWindow::MainWindow(QWidget * parent) :
 
     highlighter = new SyntaxHighlighter(editor->document());
 
-    editor->setText("Начало\nАнализ а\nа = 5.0  + 5.0 * 2.0 + 5.0\nОкончание\n");
+    auto example =
+R"doc(Начало
+Анализ а;
+Анализ б;
+Синтез в, г1, д123
+а = 2.0 + 6.0 / 3.0 * 2.0 + 2.0
+б = - а - (- а - а) + (- (а))
+в = не а или не б
+г1 = 0.0 и в
+Окончание
+)doc";
+
+    editor->setText(example);
 
     console = new QTextEdit(this);
     console->setReadOnly(true);
