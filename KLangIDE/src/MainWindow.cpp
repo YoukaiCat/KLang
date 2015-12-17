@@ -37,9 +37,11 @@ R"doc(Начало
 Окончание
 )doc";
 
+    editor->setFontPointSize(16);
     editor->setText(example);
 
     console = new QTextEdit(this);
+    console->setFontPointSize(16);
     console->setReadOnly(true);
 
     editorSplitter = new QSplitter(Qt::Vertical, this);
@@ -47,6 +49,7 @@ R"doc(Начало
     editorSplitter->addWidget(console);
 
     help = new QTextBrowser(this);
+    help->setFontPointSize(16);
     help->setSource(QUrl("qrc:/doc/help"));
 
     mainSplitter = new QSplitter(Qt::Horizontal, this);
@@ -166,6 +169,7 @@ void MainWindow::onError(Error e)
 
     QTextCharFormat fmt;
     fmt.setBackground(Qt::red);
+    fmt.setFontPointSize(16);
 
     cursor->setPosition(e.getBegin(), QTextCursor::MoveAnchor);
     cursor->setPosition(e.getEnd(), QTextCursor::KeepAnchor);
@@ -203,6 +207,7 @@ void MainWindow::clearErrorHighlighting()
         //Без этого слот бы вызывался рекурсивно
         cleared = true;
         QTextCharFormat fmt;
+        fmt.setFontPointSize(16);
         cursor->setCharFormat(fmt);
     }
 }
