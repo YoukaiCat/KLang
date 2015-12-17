@@ -9,6 +9,7 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QTextStream>
 
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
@@ -56,88 +57,98 @@ R"doc(Начало
     mainSplitter->addWidget(editorSplitter);
     mainSplitter->addWidget(help);
 
-    mainLayout = new QHBoxLayout();
+    mainLayout = new QHBoxLayout(this);
     mainLayout->addWidget(mainSplitter);
 
     centralWidget()->setLayout(mainLayout);
-
-    filename = "";
 
     cursor = new QTextCursor(editor->document());
 
     connect(editor->document(), SIGNAL(contentsChanged()),
             this, SLOT(documentWasModified()));
-}
 
-void MainWindow::maybeSave()
-{
-//    if (editor->document()->isModified()) {
-//        QMessageBox::StandardButton ret;
-//        ret = QMessageBox::warning(this, tr("Application"),
-//                     tr("The document has been modified.\n"
-//                        "Do you want to save your changes?"),
-//                     QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-//        if (ret == QMessageBox::Save)
-//            save();
-//    }
+    currentFile = nullptr;
 }
 
 MainWindow::~MainWindow()
 {
+    delete cursor;
     delete ui;
 }
 
 void MainWindow::on_actionNew_triggered()
 {
-    editor->clear();
+    clearEditor();
 }
 
 void MainWindow::on_actionOpen_triggered()
 {
     auto filename = QFileDialog::getOpenFileName(this, "Open File",
-        QDir::homePath(), "Text files(*.txt *.proxy *.proxylist)");
+        QDir::homePath(), "Text files (*.txt *.klang)");
+
     if (!filename.isEmpty()) {
-        // open file
+        std::unique_ptr<QFile> file(new QFile(filename));
+        currentFile = std::move(file);
+        if (currentFile->open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QTextStream in(currentFile.get());
+            QString text;
+            text = in.readAll();
+            currentFile->close();
+            editor->setText(text);
+            pathChanged(filename);
+        }
     }
 }
 
 void MainWindow::on_actionSave_triggered()
 {
-
+    if (currentFile != nullptr) {
+        if (currentFile->open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+            QTextStream out(currentFile.get());
+            out << editor->toPlainText();
+            currentFile->close();
+            setWindowModified(false);
+        }
+    } else {
+        on_actionSaveAs_triggered();
+    }
 }
 
 void MainWindow::on_actionSaveAs_triggered()
 {
     auto filename = QFileDialog::getSaveFileName(this, "Save File",
-        QDir::homePath(), "Text files (TXT)(*.txt)");
+        QDir::homePath() + "/new.klang", "Text files (*.txt *.klang)");
+
     if(!filename.isEmpty()) {
-        // save file
+        std::unique_ptr<QFile> file(new QFile(filename));
+        currentFile = std::move(file);
+        if (currentFile->open(QIODevice::WriteOnly | QIODevice::Text)) {
+            QTextStream out(currentFile.get());
+            out << editor->toPlainText();
+            currentFile->close();
+            pathChanged(filename);
+        }
     }
 }
 
 void MainWindow::on_actionClose_triggered()
 {
-    editor->clear();
-}
-
-void MainWindow::on_actionQuit_triggered()
-{
-
+    clearEditor();
 }
 
 void MainWindow::run()
 {
-    lexer = new Lexer(editor->toPlainText());
-    auto tokens = lexer->tokenize();
-    parser = new Parser(tokens);
-    auto ast = parser->parse();
-    interpreter = new Interpreter(ast);
+    Lexer lexer(editor->toPlainText());
+    auto tokens = lexer.tokenize();
+    Parser parser(tokens);
+    auto ast = parser.parse();
+    Interpreter interpreter(ast);
 
     qDebug(ast->inspect().toStdString().c_str());
 
     astGraph = QPixmap::fromImage(ASTGraphVisualizer::renderASTAsGraph(ast));
 
-    printResult(interpreter->evaluate());
+    printResult(interpreter.evaluate());
 }
 
 void MainWindow::on_actionRun_triggered()
@@ -178,6 +189,18 @@ void MainWindow::onError(Error e)
     cleared = false;
 }
 
+void MainWindow::clearEditor()
+{
+    editor->clear();
+    currentFile = nullptr;
+}
+
+void MainWindow::pathChanged(const QString & path)
+{
+    setWindowModified(false);
+    setWindowFilePath(path);
+}
+
 void MainWindow::printResult(const shared_ptr<QMap<QString, double>> map) const
 {
     console->setText("");
@@ -200,6 +223,7 @@ void MainWindow::printResult(const shared_ptr<QMap<QString, double>> map) const
 
 void MainWindow::documentWasModified()
 {
+    setWindowModified(true);
     clearErrorHighlighting();
 }
 

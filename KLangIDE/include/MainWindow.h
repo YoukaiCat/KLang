@@ -8,8 +8,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QtWidgets/QMainWindow>
+#include <memory>
 
+#include <QtWidgets/QMainWindow>
 #include <QSplitter>
 #include <QTextEdit>
 #include <QVBoxLayout>
@@ -22,6 +23,8 @@
 #include "Error.h"
 #include "SyntaxHighlighter.h"
 
+using std::unique_ptr;
+
 namespace Ui {
 class MainWindow;
 }
@@ -33,7 +36,6 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget * parent = 0);
     ~MainWindow();
-    void maybeSave();
     void save();
 
 public slots:
@@ -42,7 +44,6 @@ public slots:
     void on_actionSave_triggered();
     void on_actionSaveAs_triggered();
     void on_actionClose_triggered();
-    void on_actionQuit_triggered();
 
     void on_actionRun_triggered();
     void on_actionShowASTAsGraph_triggered();
@@ -55,11 +56,16 @@ public slots:
     void onError(Error e);
 
 private:
+    void clearEditor();
+    void pathChanged(const QString & path);
+
     void run();
     void printResult(const shared_ptr<QMap<QString, double>> map) const;
     void clearErrorHighlighting();
 
     Ui::MainWindow * ui;
+
+    unique_ptr<QFile> currentFile;
 
     QTextEdit * editor;
     QTextEdit * console;
@@ -71,11 +77,9 @@ private:
     QSplitter * mainSplitter;
     QHBoxLayout * mainLayout;
 
-    QString filename;
-
-    Lexer * lexer;
-    Parser * parser;
-    Interpreter * interpreter;
+//    Lexer * lexer;
+//    Parser * parser;
+//    Interpreter * interpreter;
 
     SyntaxHighlighter * highlighter;
 
