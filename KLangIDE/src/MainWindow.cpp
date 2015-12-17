@@ -178,21 +178,23 @@ void MainWindow::onError(Error e)
     cleared = false;
 }
 
-//TODO пофиксить 1.0, 2.0 и т.д
 void MainWindow::printResult(const shared_ptr<QMap<QString, double>> map) const
 {
     console->setText("");
     QMapIterator<QString, double> i(*map);
     while (i.hasNext()) {
         i.next();
+        auto val = i.value();
+        QString strVal;
         //Если число круглое, то #number не будет выводить точку и хотябы один ноль.
         //Поэтому проверяем остаток от деления, и если число круглое, выводим строго один ноль после запятой.
         //В ином случае вывод адаптивный: выводятся только значащие цифры после запятой.
-        if (fmod(i.value(), 10) == 0) {
-            console->setText(console->toPlainText() + i.key() + " = " + QString::number(i.value(), 'f', 1) + "\n");
+        if (floor(val) == val) {
+             strVal = QString::number(val, 'f', 1);
         } else {
-            console->setText(console->toPlainText() + i.key() + " = " + QString::number(i.value()) + "\n");
+             strVal = QString::number(val);
         }
+        console->setText(console->toPlainText() + i.key() + " = " + strVal + "\n");
     }
 }
 
