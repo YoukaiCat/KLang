@@ -59,7 +59,7 @@ void Interpreter::assignments(const shared_ptr<Node> assignmentsNode)
             auto value = expression(assignment->at(1));
             variable->setValue(value);
         } else {
-            throw Error(203, "Переменная '" + variableName + "' не определена", variableToken.getIndexBegin(), variableToken.getIndexEnd());
+            throw Error(201, "Переменная '" + variableName + "' не определена", variableToken.getIndexBegin(), variableToken.getIndexEnd());
         }
     }
 }
@@ -89,7 +89,7 @@ double Interpreter::expression(const shared_ptr<Node> node) const
     case Lexeme::Id:
         return variableValue(token);
     default:
-        throw Error(201, "Неизвестный оператор", node->getToken().getIndexBegin(), node->getToken().getIndexEnd());
+        throw Error(202, "Неизвестный оператор", node->getToken().getIndexBegin(), node->getToken().getIndexEnd());
     }
 }
 
@@ -99,7 +99,7 @@ double Interpreter::opDivision(const shared_ptr<Node> leftOperandNode, const sha
     double leftOperand = expression(leftOperandNode);
     double rightOperand = expression(rightOperandNode);
     if (rightOperand == 0.0) {
-        throw Error(202, "Деление на ноль!",
+        throw Error(203, "Деление на ноль!",
                     leftOperandNode->getChildren().at(0)->getToken().getIndexBegin(),
                     rightOperandNode->getChildren().at(1)->getToken().getIndexEnd());
     } else {
@@ -148,10 +148,10 @@ double Interpreter::variableValue(const Token & token) const
         if (variable->isInitialized()) {
             return variable->getValue();
         } else {
-            throw Error(203, "Переменная '" + variableName + "' не инициализирована", token.getIndexBegin(), token.getIndexEnd());
+            throw Error(204, "Переменная '" + variableName + "' не инициализирована", token.getIndexBegin(), token.getIndexEnd());
         }
     } else {
-        throw Error(203, "Переменная '" + variableName + "' не определена", token.getIndexBegin(), token.getIndexEnd());
+        throw Error(205, "Переменная '" + variableName + "' не определена", token.getIndexBegin(), token.getIndexEnd());
     }
 }
 
@@ -162,6 +162,6 @@ double Interpreter::getNumber(const Token & token) const
     if (ok) {
         return num;
     } else {
-        throw Error(204, "'" + token.getValue() + "'Невозможно преобразовать в вещественное число.", token.getIndexBegin(), token.getIndexEnd());
+        throw Error(206, "'" + token.getValue() + "'Невозможно преобразовать в вещественное число.", token.getIndexBegin(), token.getIndexEnd());
     }
 }
