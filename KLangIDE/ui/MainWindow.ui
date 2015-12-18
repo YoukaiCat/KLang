@@ -135,7 +135,7 @@
   </action>
   <action name="actionShowASTAsGraph">
    <property name="text">
-    <string>Запустить и показать АСТ как граф</string>
+    <string>Запустить и показать АСД как граф</string>
    </property>
   </action>
  </widget>
