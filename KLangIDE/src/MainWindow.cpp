@@ -201,23 +201,18 @@ void MainWindow::pathChanged(const QString & path)
     setWindowFilePath(path);
 }
 
-void MainWindow::printResult(const shared_ptr<QMap<QString, double>> map) const
+void MainWindow::printResult(const shared_ptr<QMap<QString, shared_ptr<Variable>>> map) const
 {
     console->setText("");
-    QMapIterator<QString, double> i(*map);
-    while (i.hasNext()) {
-        i.next();
-        auto val = i.value();
-        QString strVal;
-        //Если число круглое, то #number не будет выводить точку и хотябы один ноль.
-        //Поэтому проверяем остаток от деления, и если число круглое, выводим строго один ноль после запятой.
-        //В ином случае вывод адаптивный: выводятся только значащие цифры после запятой.
-        if (floor(val) == val) {
-             strVal = QString::number(val, 'f', 1);
-        } else {
-             strVal = QString::number(val);
-        }
-        console->setText(console->toPlainText() + i.key() + " = " + strVal + "\n");
+    auto variables = map->values();
+    qSort(variables.begin(), variables.end(), [](shared_ptr<Variable> left, shared_ptr<Variable> right){
+        return left->getIndex() < right->getIndex();
+    });
+    variables.erase(std::remove_if(variables.begin(), variables.end(), [](shared_ptr<Variable> var){
+        return !var->isInitialized();
+    }));
+    for (auto variable : variables) {
+        console->setText(console->toPlainText() + variable->getName() + " = " + variable->toString() + "\n");
     }
 }
 

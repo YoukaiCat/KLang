@@ -22,6 +22,7 @@
 #include "Interpreter.h"
 #include "Error.h"
 #include "SyntaxHighlighter.h"
+#include "Variable.h"
 
 using std::unique_ptr;
 
@@ -60,7 +61,7 @@ private:
     void pathChanged(const QString & path);
 
     void run();
-    void printResult(const shared_ptr<QMap<QString, double>> map) const;
+    void printResult(const shared_ptr<QMap<QString, shared_ptr<Variable>>> map) const;
     void clearErrorHighlighting();
 
     Ui::MainWindow * ui;

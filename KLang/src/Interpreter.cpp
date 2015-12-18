@@ -11,17 +11,17 @@
 Interpreter::Interpreter(const shared_ptr<Node> ast, QObject * parent)
     : QObject(parent)
     , ast(ast)
-    , variables(std::make_shared<QMap<QString, double>>(QMap<QString, double>()))
+    , variables(std::make_shared<QMap<QString, shared_ptr<Variable>>>(QMap<QString, shared_ptr<Variable>>()))
 {}
 
-shared_ptr<QMap<QString, double>> Interpreter::evaluate()
+shared_ptr<QMap<QString, shared_ptr<Variable>>> Interpreter::evaluate()
 {
     declarations(ast->at(0));
     assignments(ast->at(1));
     return variables;
 }
 
-shared_ptr<QMap<QString, double>> Interpreter::getVariables() const
+shared_ptr<QMap<QString, shared_ptr<Variable>>> Interpreter::getVariables() const
 {
     return variables;
 }
@@ -45,14 +45,22 @@ void Interpreter::addVariable(const shared_ptr<Node> id)
     if (variables->contains(name)) {
         throw Error(200, "Переменная с именем '" + name + "' уже объявлена", id->getToken().getIndexBegin(), id->getToken().getIndexEnd());
     } else {
-        variables->insert(name, DEFAULT_REAL_VAL);
+        variables->insert(name, std::make_shared<Variable>(Variable(name)));
     }
 }
 
 void Interpreter::assignments(const shared_ptr<Node> assignmentsNode)
 {
     for (auto assignment : assignmentsNode->getChildren()) {
-        (*variables)[assignment->at(0)->getToken().getValue()] = expression(assignment->at(1));
+        auto variableToken = assignment->at(0)->getToken();
+        auto variableName = variableToken.getValue();
+        if (variables->contains(variableName)) {
+            auto variable = variables->value(variableName);
+            auto value = expression(assignment->at(1));
+            variable->setValue(value);
+        } else {
+            throw Error(203, "Переменная '" + variableName + "' не определена", variableToken.getIndexBegin(), variableToken.getIndexEnd());
+        }
     }
 }
 
@@ -69,13 +77,13 @@ double Interpreter::expression(const shared_ptr<Node> node) const
     case Lexeme::Multiply:
         return expression(node->at(0)) * expression(node->at(1));
     case Lexeme::Divide:
-        return op_division(node->at(0), node->at(1));
+        return opDivision(node->at(0), node->at(1));
     case Lexeme::And:
-        return op_and(expression(node->at(0)), expression(node->at(1)));
+        return opAnd(expression(node->at(0)), expression(node->at(1)));
     case Lexeme::Or:
-        return op_or(expression(node->at(0)), expression(node->at(1)));
+        return opOr(expression(node->at(0)), expression(node->at(1)));
     case Lexeme::Not:
-        return op_not(expression(node->at(0)));
+        return opNot(expression(node->at(0)));
     case Lexeme::Num:
         return getNumber(token);
     case Lexeme::Id:
@@ -86,7 +94,7 @@ double Interpreter::expression(const shared_ptr<Node> node) const
 }
 
 // TODO было бы правильнее подсвечивать знак деления и правый операнд
-double Interpreter::op_division(const shared_ptr<Node> leftOperandNode, const shared_ptr<Node> rightOperandNode) const
+double Interpreter::opDivision(const shared_ptr<Node> leftOperandNode, const shared_ptr<Node> rightOperandNode) const
 {
     double leftOperand = expression(leftOperandNode);
     double rightOperand = expression(rightOperandNode);
@@ -103,7 +111,7 @@ double Interpreter::op_division(const shared_ptr<Node> leftOperandNode, const sh
 // x == 0.0 => false
 // x != 0.0 => true
 // Операторы возвращают 1.0, когда вычисляются в true
-double Interpreter::op_and(double leftOperand, double rightOperand) const
+double Interpreter::opAnd(double leftOperand, double rightOperand) const
 {
     // Если оба операнда не равны нулю
     if (leftOperand != 0.0 && rightOperand != 0.0) {
@@ -113,7 +121,7 @@ double Interpreter::op_and(double leftOperand, double rightOperand) const
     }
 }
 
-double Interpreter::op_or(double leftOperand, double rightOperand) const
+double Interpreter::opOr(double leftOperand, double rightOperand) const
 {
     // Если какой-либо из операндов не равен нулю
     if (leftOperand != 0.0 || rightOperand != 0.0) {
@@ -123,7 +131,7 @@ double Interpreter::op_or(double leftOperand, double rightOperand) const
     }
 }
 
-double Interpreter::op_not(double operand) const
+double Interpreter::opNot(double operand) const
 {
     if (operand == 0.0) {
         return 1.0;
@@ -134,10 +142,16 @@ double Interpreter::op_not(double operand) const
 
 double Interpreter::variableValue(const Token & token) const
 {
-    if (variables->contains(token.getValue())) {
-        return variables->value(token.getValue());
+    auto variableName = token.getValue();
+    if (variables->contains(variableName)) {
+        auto variable = variables->value(variableName);
+        if (variable->isInitialized()) {
+            return variable->getValue();
+        } else {
+            throw Error(203, "Переменная '" + variableName + "' не инициализирована", token.getIndexBegin(), token.getIndexEnd());
+        }
     } else {
-        throw Error(203, "Переменная '" + token.getValue() + "' не определена", token.getIndexBegin(), token.getIndexEnd());
+        throw Error(203, "Переменная '" + variableName + "' не определена", token.getIndexBegin(), token.getIndexEnd());
     }
 }
 
