@@ -77,10 +77,6 @@ private:
     QSplitter * mainSplitter;
     QHBoxLayout * mainLayout;
 
-//    Lexer * lexer;
-//    Parser * parser;
-//    Interpreter * interpreter;
-
     SyntaxHighlighter * highlighter;
 
     QTextCursor * cursor;
