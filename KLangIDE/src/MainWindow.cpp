@@ -208,11 +208,10 @@ void MainWindow::printResult(const shared_ptr<QMap<QString, shared_ptr<Variable>
     qSort(variables.begin(), variables.end(), [](shared_ptr<Variable> left, shared_ptr<Variable> right){
         return left->getIndex() < right->getIndex();
     });
-    variables.erase(std::remove_if(variables.begin(), variables.end(), [](shared_ptr<Variable> var){
-        return !var->isInitialized();
-    }));
     for (auto variable : variables) {
-        console->setText(console->toPlainText() + variable->getName() + " = " + variable->toString() + "\n");
+        if (variable->isInitialized()) {
+            console->setText(console->toPlainText() + variable->getName() + " = " + variable->toString() + "\n");
+        }
     }
 }
 
