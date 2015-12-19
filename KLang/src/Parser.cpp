@@ -17,19 +17,19 @@ Parser::Parser(const shared_ptr<QList<Token>> tokens, QObject * parent)
 
 shared_ptr<Node> Parser::parse()
 {
-    return begin();
+    auto beginNode = begin();
+    auto declarationsNode = declarations();
+    auto assignmentsNode = assignments();
+    auto endNode = end();
+    beginNode->addChild(declarationsNode)->addChild(assignmentsNode)->addChild(endNode);
+    return beginNode;
 }
 
 shared_ptr<Node> Parser::begin()
 {
     auto token = tokens->takeFirst();
     if (token.getType() == Lexeme::Begin) {
-        auto declarationsNode = declarations();
-        auto assignmentsNode = assignments();
-        auto endNode = end();
-        auto node = make_shared<Node>(Node(token));
-        node->addChild(declarationsNode)->addChild(assignmentsNode)->addChild(endNode);
-        return node;
+        return make_shared<Node>(Node(token));
     } else {
         throw Error(100, QString("Ожидалось ключевое слово 'Начало', но ") + token.toString(), token.getIndexBegin(), token.getIndexEnd());
     }
