@@ -10,6 +10,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTextStream>
+#include <QCommonStyle>
 
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
@@ -68,6 +69,9 @@ R"doc(Начало
             this, SLOT(documentWasModified()));
 
     currentFile = nullptr;
+
+    auto icon = QCommonStyle().standardIcon(QStyle::SP_ArrowRight);
+    ui->mainToolBar->addAction(icon, "Запустить", this, SLOT(on_actionRun_triggered()));
 }
 
 MainWindow::~MainWindow()
