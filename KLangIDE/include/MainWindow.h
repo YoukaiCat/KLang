@@ -16,6 +16,7 @@
 #include <QVBoxLayout>
 #include <QTextBrowser>
 #include <QPixmap>
+#include <QFile>
 
 #include "Lexer.h"
 #include "Parser.h"
