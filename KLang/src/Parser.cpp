@@ -7,7 +7,6 @@
 
 #include "Parser.h"
 #include "Error.h"
-#include "Lexeme.h"
 
 using std::make_shared;
 
@@ -38,19 +37,14 @@ shared_ptr<Node> Parser::begin()
 
 shared_ptr<Node> Parser::declarations()
 {
-    if (tokens->first().getType() == Lexeme::SingleDeclaration || tokens->first().getType() == Lexeme::MultipleDeclaration) {
-        auto declarations = QList<shared_ptr<Node>>();
+    auto node = make_shared<Node>(Node(Token(Lexeme::Declarations, "", 0, 0)));
+    auto declarations = QList<shared_ptr<Node>>();
+    do {
+        if (!declarations.isEmpty()) tokens->takeFirst();
         declarations.append(processDeclarations());
-        while (tokens->first().getType() == Lexeme::Semicolon && (tokens->at(1).getType() == Lexeme::SingleDeclaration || tokens->at(1).getType() == Lexeme::MultipleDeclaration)) {
-            tokens->takeFirst();
-            declarations.append(processDeclarations());
-        }
-        auto node = make_shared<Node>(Node(Token(Lexeme::Declarations, "", 0, 0)));
-        node->addChildren(declarations);
-        return node;
-    } else {
-        throw Error(101, QString("Ожидалось ключевое слово 'Анализ' или слово 'Синтез', но ") + tokens->first().toString(), tokens->first().getIndexBegin(), tokens->first().getIndexEnd());
-    }
+    } while (tokens->first().getType() == Lexeme::Semicolon);
+    node->addChildren(declarations);
+    return node;
 }
 
 shared_ptr<Node> Parser::processDeclarations()
@@ -59,10 +53,12 @@ shared_ptr<Node> Parser::processDeclarations()
     if (token.getType() == Lexeme::SingleDeclaration) {
         auto node = make_shared<Node>(Node(token));
         node->addChild(declareId());
+        lastDeclaredType = Lexeme::SingleDeclaration;
         return node;
     } else if (token.getType() == Lexeme::MultipleDeclaration) {
         auto node = make_shared<Node>(Node(token));
         node->addChildren(*declareIds());
+        lastDeclaredType = Lexeme::MultipleDeclaration;
         return node;
     } else {
         throw Error(102, QString("Ожидалось ключевое слово 'Анализ' или слово 'Синтез', но ")  + token.toString(), token.getIndexBegin(), token.getIndexEnd());
@@ -75,39 +71,53 @@ shared_ptr<Node> Parser::declareId()
     if (token.getType() == Lexeme::Id) {
         return make_shared<Node>(Node(token));
     } else {
-        throw Error(103, QString("После слова 'Анализ' ожидался идентификатор, но ") + token.toString(), token.getIndexBegin(), token.getIndexEnd());
+        throw Error(103, QString("После слова 'Анализ' ожидалась переменная, но ") + token.toString(), token.getIndexBegin(), token.getIndexEnd());
     }
 }
 
 shared_ptr<QList<shared_ptr<Node>>> Parser::declareIds()
 {
-    if (tokens->first().getType() == Lexeme::Id) {
-        auto ids = make_shared<QList<shared_ptr<Node>>>(QList<shared_ptr<Node>>());
-        ids->append(make_shared<Node>(Node(tokens->takeFirst())));
-        while (tokens->first().getType() == Lexeme::Comma && tokens->at(1).getType() == Lexeme::Id) {
+    auto ids = make_shared<QList<shared_ptr<Node>>>(QList<shared_ptr<Node>>());
+    do {
+        if (!ids->isEmpty()) {
             tokens->takeFirst();
-            ids->append(make_shared<Node>(Node(tokens->takeFirst())));
+            if (tokens->first().getType() == Lexeme::Id) {
+                ids->append(make_shared<Node>(Node(tokens->takeFirst())));
+            } else {
+                throw Error(104, QString("После запятой ожидалась переменная, но ") + tokens->first().toString(), tokens->first().getIndexBegin(), tokens->first().getIndexEnd());
+            }
+        } else {
+            if (tokens->first().getType() == Lexeme::Id) {
+                ids->append(make_shared<Node>(Node(tokens->takeFirst())));
+            } else {
+                throw Error(104, QString("После слова 'Синтез' ожидалась переменная, но ") + tokens->first().toString(), tokens->first().getIndexBegin(), tokens->first().getIndexEnd());
+            }
         }
-        return ids;
-    } else {
-        throw Error(104, QString("Ожидался идентификатор после слова 'Синтез', но ") + tokens->first().toString(), tokens->first().getIndexBegin(), tokens->first().getIndexEnd());
-    }
+    } while (tokens->first().getType() == Lexeme::Comma);
+    return ids;
 }
 
 shared_ptr<Node> Parser::assignments()
 {
-    if (tokens->first().getType() == Lexeme::Id && tokens->at(1).getType() == Lexeme::Equality) {
-        auto as = QList<shared_ptr<Node>>();
-        as.append(createAssignment());
-        while (tokens->first().getType() == Lexeme::Id && tokens->at(1).getType() == Lexeme::Equality) {
-            as.append(createAssignment());
+    auto node = make_shared<Node>(Node(Token(Lexeme::Assignments, "", 0, 0)));
+    auto as = QList<shared_ptr<Node>>();
+    do {
+        if (tokens->first().getType() == Lexeme::Id) {
+            if (tokens->at(1).getType() == Lexeme::Equality) {
+                as.append(createAssignment());
+            } else {
+                throw Error(105, QString("После переменной ожидался символ '=', но ") + tokens->at(1).toString(), tokens->at(1).getIndexBegin(), tokens->at(1).getIndexEnd());
+            }
+        } else {
+            if (lastDeclaredType == Lexeme::MultipleDeclaration) {
+                throw Error(105, QString("Ожидался символ ';' или символ ',' или переменная, но ") + tokens->first().toString(), tokens->first().getIndexBegin(), tokens->first().getIndexEnd());
+            } else {
+                throw Error(105, QString("Ожидался символ ';' или переменная, но ") + tokens->first().toString(), tokens->first().getIndexBegin(), tokens->first().getIndexEnd());
+            }
         }
-        auto node = make_shared<Node>(Node(Token(Lexeme::Assignments, "", 0, 0)));
-        node->addChildren(as);
-        return node;
-    } else {
-        throw Error(105, QString("После объявления переменных ожидались присваивания, но ") + tokens->first().toString(), tokens->first().getIndexBegin(), tokens->first().getIndexEnd());
-    }
+    } while (tokens->first().getType() == Lexeme::Id);
+    node->addChildren(as);
+    return node;
 }
 
 shared_ptr<Node> Parser::createAssignment()
@@ -208,7 +218,7 @@ shared_ptr<Node> Parser::base()
             throw Error(106, QString("Не найдена закрывающая скобка"), parenthesisIndices.pop(), token.getIndexEnd());
         }
     } else {
-        throw Error(107, QString("Ожидалось число, идентификатор или открывающая скобка, но ") + token.toString(), token.getIndexBegin(), token.getIndexEnd());
+        throw Error(107, QString("Ожидалось число, переменная или открывающая скобка, но ") + token.toString(), token.getIndexBegin(), token.getIndexEnd());
     }
 }
 
@@ -219,9 +229,9 @@ shared_ptr<Node> Parser::end()
         if (tokens->first().getType() == Lexeme::Eof) {
             return make_shared<Node>(Node(token));
         } else {
-            throw Error(108, QString("После ключевого слова 'Окончание' не должны находиться ключевые слова, идентификаторы и знаки операций. ") + tokens->first().toString(), tokens->first().getIndexBegin(), tokens->first().getIndexEnd());
+            throw Error(108, QString("После ключевого слова 'Окончание' не должны находиться ключевые слова, переменные и знаки операций.") + tokens->first().toString(), tokens->first().getIndexBegin(), tokens->first().getIndexEnd());
         }
     } else {
-        throw Error(109, QString("Ожидалось ключевое слово 'Окончание', но ") + token.toString(), token.getIndexBegin(), token.getIndexEnd());
+        throw Error(109, QString("Ожидалась переменная, знак операции или ключевое слово 'Окончание', но ") + token.toString(), token.getIndexBegin(), token.getIndexEnd());
     }
 }

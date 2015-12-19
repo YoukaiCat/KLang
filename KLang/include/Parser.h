@@ -17,6 +17,7 @@
 
 #include "Token.h"
 #include "Node.h"
+#include "Lexeme.h"
 
 using std::shared_ptr;
 
@@ -44,6 +45,7 @@ private:
     shared_ptr<Node> end();
     QString tokenToString(const Token & token);
 
+    Lexeme lastDeclaredType;
     shared_ptr<QList<Token>> tokens;
     QStack<int> parenthesisIndices;
 };
