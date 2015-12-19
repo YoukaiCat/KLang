@@ -1,6 +1,8 @@
 #ifndef VARIABLE_H
 #define VARIABLE_H
 
+#include "KLang_global.h"
+
 #include <QString>
 
 class Variable
