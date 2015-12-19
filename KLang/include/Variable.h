@@ -5,7 +5,7 @@
 
 #include <QString>
 
-class Variable
+class KLANG_LIBRARY_EXPORT Variable
 {
 public:
     Variable(const QString & name);
