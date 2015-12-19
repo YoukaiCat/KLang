@@ -46,6 +46,8 @@ private:
     QString tokenToString(const Token & token);
 
     Lexeme lastDeclaredType;
+    bool expectUnaryMinus = true;
+
     shared_ptr<QList<Token>> tokens;
     QStack<int> parenthesisIndices;
 };

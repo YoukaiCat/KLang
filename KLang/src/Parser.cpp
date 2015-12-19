@@ -116,6 +116,7 @@ shared_ptr<Node> Parser::assignment()
     if (idToken.getType() == Lexeme::Id) {
         auto eqToken = tokens->takeFirst();
         if (eqToken.getType() == Lexeme::Equality) {
+            expectUnaryMinus = true;
             auto node = make_shared<Node>(Node(eqToken));
             node->addChild(make_shared<Node>(Node(idToken)))->addChild(additiveExpression());
             return node;
@@ -139,12 +140,14 @@ shared_ptr<Node> Parser::additiveExpression()
     //Выражение более высокого приоретета либо его отрицание
     shared_ptr<Node> node;
     if (tokens->first().getType() == Lexeme::Minus) {
+        expectUnaryMinus = false;
         //Eсли унарный минус есть, создаётся нода с отрицанием выражения высшего приоретета
         node = unaryMinus();
     } else {
         //Иначе возвращается нода выражения высшего приоретета
         node = multiplicativeExpression();
     }
+    expectUnaryMinus = false;
     while (tokens->first().getType() == Lexeme::Plus || tokens->first().getType() == Lexeme::Minus) {
         auto sign = tokens->takeFirst();
         auto signNode = make_shared<Node>(Node(sign));
@@ -192,6 +195,7 @@ shared_ptr<Node> Parser::booleanBinaryExpression()
 shared_ptr<Node> Parser::notExpression()
 {
     if (tokens->first().getType() == Lexeme::Not) {
+        expectUnaryMinus = false;
         auto sign = tokens->takeFirst();
         auto signNode = make_shared<Node>(Node(sign));
         signNode->addChild(base());
@@ -208,11 +212,14 @@ shared_ptr<Node> Parser::base()
 {
     auto token = tokens->takeFirst();
     if (token.getType() == Lexeme::Num || token.getType() == Lexeme::Id) {
+        expectUnaryMinus = false;
         return make_shared<Node>(Node(token));
     } else if (token.getType() == Lexeme::LeftParentheses) {
+        expectUnaryMinus = true;
         parenthesisIndices.push(token.getIndexBegin());
         auto node = additiveExpression();
         if (tokens->first().getType() == Lexeme::RightParentheses) {
+            expectUnaryMinus = false;
             tokens->takeFirst();
             parenthesisIndices.pop();
             return node;
@@ -220,7 +227,11 @@ shared_ptr<Node> Parser::base()
             throw Error(108, QString("Не найдена закрывающая скобка"), parenthesisIndices.pop(), token.getIndexEnd());
         }
     } else {
-        throw Error(109, QString("Ожидалось число, переменная или открывающая скобка, но ") + token.toString(), token.getIndexBegin(), token.getIndexEnd());
+        if (expectUnaryMinus) {
+            throw Error(109, QString("Ожидалось число, переменная, открывающая скобка или унарный минус, но ") + token.toString(), token.getIndexBegin(), token.getIndexEnd());
+        } else {
+            throw Error(110, QString("Ожидалось число, переменная или открывающая скобка, но ") + token.toString(), token.getIndexBegin(), token.getIndexEnd());
+        }
     }
 }
 
@@ -232,9 +243,9 @@ shared_ptr<Node> Parser::end()
         if (eof.getType() == Lexeme::Eof) {
             return make_shared<Node>(Node(end));
         } else {
-            throw Error(110, QString("После ключевого слова 'Окончание' не должны находиться ключевые слова, переменные и знаки операций.") + eof.toString(), eof.getIndexBegin(), eof.getIndexEnd());
+            throw Error(111, QString("После ключевого слова 'Окончание' не должны находиться ключевые слова, переменные и знаки операций.") + eof.toString(), eof.getIndexBegin(), eof.getIndexEnd());
         }
     } else {
-        throw Error(111, QString("Ожидалась переменная, знак операции или ключевое слово 'Окончание', но ") + end.toString(), end.getIndexBegin(), end.getIndexEnd());
+        throw Error(112, QString("Ожидалась переменная, знак бинарной операции или ключевое слово 'Окончание', но ") + end.toString(), end.getIndexBegin(), end.getIndexEnd());
     }
 }
