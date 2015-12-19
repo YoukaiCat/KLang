@@ -81,16 +81,18 @@ shared_ptr<QList<shared_ptr<Node>>> Parser::declareIds()
     do {
         if (!ids->isEmpty()) {
             tokens->takeFirst();
-            if (tokens->first().getType() == Lexeme::Id) {
-                ids->append(make_shared<Node>(Node(tokens->takeFirst())));
+            auto id = tokens->takeFirst();
+            if (id.getType() == Lexeme::Id) {
+                ids->append(make_shared<Node>(Node(id)));
             } else {
-                throw Error(104, QString("После запятой ожидалась переменная, но ") + tokens->first().toString(), tokens->first().getIndexBegin(), tokens->first().getIndexEnd());
+                throw Error(104, QString("После запятой ожидалась переменная, но ") + id.toString(), id.getIndexBegin(), id.getIndexEnd());
             }
         } else {
-            if (tokens->first().getType() == Lexeme::Id) {
-                ids->append(make_shared<Node>(Node(tokens->takeFirst())));
+            auto id = tokens->takeFirst();
+            if (id.getType() == Lexeme::Id) {
+                ids->append(make_shared<Node>(Node(id)));
             } else {
-                throw Error(104, QString("После слова 'Синтез' ожидалась переменная, но ") + tokens->first().toString(), tokens->first().getIndexBegin(), tokens->first().getIndexEnd());
+                throw Error(104, QString("После слова 'Синтез' ожидалась переменная, но ") + id.toString(), id.getIndexBegin(), id.getIndexEnd());
             }
         }
     } while (tokens->first().getType() == Lexeme::Comma);
@@ -224,14 +226,15 @@ shared_ptr<Node> Parser::base()
 
 shared_ptr<Node> Parser::end()
 {
-    auto token = tokens->takeFirst();
-    if (token.getType() == Lexeme::End) {
-        if (tokens->first().getType() == Lexeme::Eof) {
+    auto end = tokens->takeFirst();
+    if (end.getType() == Lexeme::End) {
+        auto eof = tokens->takeFirst();
+        if (eof.getType() == Lexeme::Eof) {
             return make_shared<Node>(Node(token));
         } else {
-            throw Error(108, QString("После ключевого слова 'Окончание' не должны находиться ключевые слова, переменные и знаки операций.") + tokens->first().toString(), tokens->first().getIndexBegin(), tokens->first().getIndexEnd());
+            throw Error(108, QString("После ключевого слова 'Окончание' не должны находиться ключевые слова, переменные и знаки операций.") + eof.toString(), eof.getIndexBegin(), eof.getIndexEnd());
         }
     } else {
-        throw Error(109, QString("Ожидалась переменная, знак операции или ключевое слово 'Окончание', но ") + token.toString(), token.getIndexBegin(), token.getIndexEnd());
+        throw Error(109, QString("Ожидалась переменная, знак операции или ключевое слово 'Окончание', но ") + end.toString(), end.getIndexBegin(), end.getIndexEnd());
     }
 }
