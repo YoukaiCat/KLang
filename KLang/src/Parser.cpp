@@ -61,7 +61,7 @@ shared_ptr<Node> Parser::declaration()
         lastDeclaredType = Lexeme::MultipleDeclaration;
         return node;
     } else {
-        throw Error(102, QString("Ожидалось ключевое слово 'Анализ' или слово 'Синтез', но ")  + token.toString(), token.getIndexBegin(), token.getIndexEnd());
+        throw Error(101, QString("Ожидалось ключевое слово 'Анализ' или слово 'Синтез', но ")  + token.toString(), token.getIndexBegin(), token.getIndexEnd());
     }
 }
 
@@ -71,7 +71,7 @@ shared_ptr<Node> Parser::declareId()
     if (token.getType() == Lexeme::Id) {
         return make_shared<Node>(Node(token));
     } else {
-        throw Error(103, QString("После слова 'Анализ' ожидалась переменная, но ") + token.toString(), token.getIndexBegin(), token.getIndexEnd());
+        throw Error(102, QString("После слова 'Анализ' ожидалась переменная, но ") + token.toString(), token.getIndexBegin(), token.getIndexEnd());
     }
 }
 
@@ -85,7 +85,7 @@ shared_ptr<QList<shared_ptr<Node>>> Parser::declareIds()
             if (id.getType() == Lexeme::Id) {
                 ids->append(make_shared<Node>(Node(id)));
             } else {
-                throw Error(104, QString("После запятой ожидалась переменная, но ") + id.toString(), id.getIndexBegin(), id.getIndexEnd());
+                throw Error(103, QString("После запятой ожидалась переменная, но ") + id.toString(), id.getIndexBegin(), id.getIndexEnd());
             }
         } else {
             auto id = tokens->takeFirst();
@@ -124,9 +124,9 @@ shared_ptr<Node> Parser::assignment()
         }
     } else {
         if (lastDeclaredType == Lexeme::MultipleDeclaration) {
-            throw Error(105, QString("Ожидался символ ';' или символ ',' или переменная, но ") + idToken.toString(), idToken.getIndexBegin(), idToken.getIndexEnd());
+            throw Error(106, QString("Ожидался символ ';' или символ ',' или переменная, но ") + idToken.toString(), idToken.getIndexBegin(), idToken.getIndexEnd());
         } else {
-            throw Error(105, QString("Ожидался символ ';' или переменная, но ") + idToken.toString(), idToken.getIndexBegin(), idToken.getIndexEnd());
+            throw Error(107, QString("Ожидался символ ';' или переменная, но ") + idToken.toString(), idToken.getIndexBegin(), idToken.getIndexEnd());
         }
     }
 }
@@ -217,10 +217,10 @@ shared_ptr<Node> Parser::base()
             parenthesisIndices.pop();
             return node;
         } else {
-            throw Error(106, QString("Не найдена закрывающая скобка"), parenthesisIndices.pop(), token.getIndexEnd());
+            throw Error(108, QString("Не найдена закрывающая скобка"), parenthesisIndices.pop(), token.getIndexEnd());
         }
     } else {
-        throw Error(107, QString("Ожидалось число, переменная или открывающая скобка, но ") + token.toString(), token.getIndexBegin(), token.getIndexEnd());
+        throw Error(109, QString("Ожидалось число, переменная или открывающая скобка, но ") + token.toString(), token.getIndexBegin(), token.getIndexEnd());
     }
 }
 
@@ -230,11 +230,11 @@ shared_ptr<Node> Parser::end()
     if (end.getType() == Lexeme::End) {
         auto eof = tokens->takeFirst();
         if (eof.getType() == Lexeme::Eof) {
-            return make_shared<Node>(Node(token));
+            return make_shared<Node>(Node(end));
         } else {
-            throw Error(108, QString("После ключевого слова 'Окончание' не должны находиться ключевые слова, переменные и знаки операций.") + eof.toString(), eof.getIndexBegin(), eof.getIndexEnd());
+            throw Error(110, QString("После ключевого слова 'Окончание' не должны находиться ключевые слова, переменные и знаки операций.") + eof.toString(), eof.getIndexBegin(), eof.getIndexEnd());
         }
     } else {
-        throw Error(109, QString("Ожидалась переменная, знак операции или ключевое слово 'Окончание', но ") + end.toString(), end.getIndexBegin(), end.getIndexEnd());
+        throw Error(111, QString("Ожидалась переменная, знак операции или ключевое слово 'Окончание', но ") + end.toString(), end.getIndexBegin(), end.getIndexEnd());
     }
 }
