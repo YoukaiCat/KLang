@@ -31,11 +31,11 @@ public:
 private:
     shared_ptr<Node> begin();
     shared_ptr<Node> declarations();
-    shared_ptr<Node> processDeclarations();
+    shared_ptr<Node> declaration();
     shared_ptr<Node> declareId();
     shared_ptr<QList<shared_ptr<Node>>> declareIds();
     shared_ptr<Node> assignments();
-    shared_ptr<Node> createAssignment();
+    shared_ptr<Node> assignment();
     shared_ptr<Node> unaryMinus();
     shared_ptr<Node> additiveExpression();
     shared_ptr<Node> multiplicativeExpression();

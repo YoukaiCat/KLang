@@ -38,16 +38,16 @@ shared_ptr<Node> Parser::begin()
 shared_ptr<Node> Parser::declarations()
 {
     auto node = make_shared<Node>(Node(Token(Lexeme::Declarations, "", 0, 0)));
-    auto declarations = QList<shared_ptr<Node>>();
+    auto ds = QList<shared_ptr<Node>>();
     do {
-        if (!declarations.isEmpty()) tokens->takeFirst();
-        declarations.append(processDeclarations());
+        if (!ds.isEmpty()) tokens->takeFirst();
+        ds.append(declaration());
     } while (tokens->first().getType() == Lexeme::Semicolon);
-    node->addChildren(declarations);
+    node->addChildren(ds);
     return node;
 }
 
-shared_ptr<Node> Parser::processDeclarations()
+shared_ptr<Node> Parser::declaration()
 {
     auto token = tokens->takeFirst();
     if (token.getType() == Lexeme::SingleDeclaration) {
@@ -102,31 +102,31 @@ shared_ptr<Node> Parser::assignments()
     auto node = make_shared<Node>(Node(Token(Lexeme::Assignments, "", 0, 0)));
     auto as = QList<shared_ptr<Node>>();
     do {
-        if (tokens->first().getType() == Lexeme::Id) {
-            if (tokens->at(1).getType() == Lexeme::Equality) {
-                as.append(createAssignment());
-            } else {
-                throw Error(105, QString("После переменной ожидался символ '=', но ") + tokens->at(1).toString(), tokens->at(1).getIndexBegin(), tokens->at(1).getIndexEnd());
-            }
-        } else {
-            if (lastDeclaredType == Lexeme::MultipleDeclaration) {
-                throw Error(105, QString("Ожидался символ ';' или символ ',' или переменная, но ") + tokens->first().toString(), tokens->first().getIndexBegin(), tokens->first().getIndexEnd());
-            } else {
-                throw Error(105, QString("Ожидался символ ';' или переменная, но ") + tokens->first().toString(), tokens->first().getIndexBegin(), tokens->first().getIndexEnd());
-            }
-        }
+        as.append(assignment());
     } while (tokens->first().getType() == Lexeme::Id);
     node->addChildren(as);
     return node;
 }
 
-shared_ptr<Node> Parser::createAssignment()
+shared_ptr<Node> Parser::assignment()
 {
     auto idToken = tokens->takeFirst();
-    auto eqToken = tokens->takeFirst();
-    auto node = make_shared<Node>(Node(eqToken));
-    node->addChild(make_shared<Node>(Node(idToken)))->addChild(additiveExpression());
-    return node;
+    if (idToken.getType() == Lexeme::Id) {
+        auto eqToken = tokens->takeFirst();
+        if (eqToken.getType() == Lexeme::Equality) {
+            auto node = make_shared<Node>(Node(eqToken));
+            node->addChild(make_shared<Node>(Node(idToken)))->addChild(additiveExpression());
+            return node;
+        } else {
+            throw Error(105, QString("После переменной ожидался символ '=', но ") + eqToken.toString(), eqToken.getIndexBegin(), eqToken.getIndexEnd());
+        }
+    } else {
+        if (lastDeclaredType == Lexeme::MultipleDeclaration) {
+            throw Error(105, QString("Ожидался символ ';' или символ ',' или переменная, но ") + idToken.toString(), idToken.getIndexBegin(), idToken.getIndexEnd());
+        } else {
+            throw Error(105, QString("Ожидался символ ';' или переменная, но ") + idToken.toString(), idToken.getIndexBegin(), idToken.getIndexEnd());
+        }
+    }
 }
 
 // Classic recursive-descent parser for expressions
