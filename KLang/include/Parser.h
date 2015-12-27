@@ -43,7 +43,6 @@ private:
     shared_ptr<Node> notExpression();
     shared_ptr<Node> base();
     shared_ptr<Node> end();
-    QString tokenToString(const Token & token);
 
     Lexeme lastDeclaredType;
     bool expectUnaryMinus = true;

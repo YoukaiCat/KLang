@@ -126,6 +126,9 @@
    <property name="text">
     <string>Запустить и показать АСД как граф</string>
    </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

@@ -3,8 +3,7 @@
 #include <QtTest/QtTest>
 
 #include "Lexer.h"
-#include "Parser.h"
-#include "Interpreter.h"
+#include "SimpleInterpreter.h"
 #include "Variable.h"
 
 class KLangUnitTest: public QObject
@@ -67,7 +66,7 @@ private slots:
         QCOMPARE(result->value("б1")->getValue(), 0.0);
         QCOMPARE(result->value("в1")->getValue(), 0.0);
     }
-    void example6() {
+    void example5() {
         auto source = R"doc(
             Начало
             Синтез а, б, в;
@@ -90,7 +89,7 @@ private slots:
         QCOMPARE(result->value("б1")->getValue(), 6.0);
         QCOMPARE(result->value("в1")->getValue(), 5.5);
     }
-    void example7() {
+    void example6() {
         auto source = R"doc(
             Начало
             Синтез а, б, в
@@ -104,7 +103,7 @@ private slots:
         QCOMPARE(result->value("б")->getValue(), 8.0);
         QCOMPARE(result->value("в")->getValue(), 15.0);
     }
-    void example8() {
+    void example7() {
         auto source = R"doc(
             Начало
             Синтез а, б, в, г
@@ -120,7 +119,7 @@ private slots:
         QCOMPARE(result->value("в")->getValue(), -8.0);
         QCOMPARE(result->value("г")->getValue(), 11.0);
     }
-    void example9() {
+    void example8() {
         auto source = R"doc(
             Начало
             Синтез а, б, в
@@ -135,7 +134,7 @@ private slots:
         QCOMPARE(result->value("в")->getValue(), 0.0);
     }
     // AND
-    void example10() {
+    void example9() {
         auto source = R"doc(
             Начало
             Синтез а, б, в, г
@@ -152,7 +151,7 @@ private slots:
         QCOMPARE(result->value("г")->getValue(), 0.0);
     }
     // OR
-    void example11() {
+    void example10() {
         auto source = R"doc(
             Начало
             Синтез а, б, в, г
@@ -171,8 +170,7 @@ private slots:
 private:
     shared_ptr<QMap<QString, shared_ptr<Variable>>> interpret(const QString & source) {
         auto lexer = new Lexer(source);
-        auto parser = new Parser(lexer->tokenize());
-        auto interpreter = new Interpreter(parser->parse());
+        auto interpreter = new SimpleInterpreter(lexer->tokenize());
         return interpreter->evaluate();
     }
 };

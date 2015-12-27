@@ -18,7 +18,8 @@ SOURCES += \
     src/Node.cpp \
     src/Interpreter.cpp \
     src/Error.cpp \
-    src/Variable.cpp
+    src/Variable.cpp \
+    src/SimpleInterpreter.cpp
 
 HEADERS += \
     include/Token.h \
@@ -30,6 +31,7 @@ HEADERS += \
     include/Interpreter.h \
     include/Error.h \
     include/KLang_global.h \
-    include/Variable.h
+    include/Variable.h \
+    include/SimpleInterpreter.h
 
 include(../QMake/compiler.pri)
